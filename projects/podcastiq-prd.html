@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PodcastIQ: AI Product Requirements Document &middot; Dhanvardini Rajendran</title>
+  <meta name="description" content="The complete AI-product PRD for PodcastIQ: a 9-agent podcast-intelligence platform on LangGraph and Snowflake Cortex, with a temporal knowledge graph, hybrid fact-checking, GraphRAG retrieval, an evaluation framework, guardrails, and rollout. 95.8% router accuracy, BERTScore 0.774, ~$0.0012 per query." />
+
+  <meta property="og:title" content="PodcastIQ: AI Product Requirements Document" />
+  <meta property="og:description" content="The end-to-end AI PRD for PodcastIQ: GraphRAG retrieval, a temporal knowledge graph, hybrid fact-checking, evaluation, and rollout." />
+  <meta property="og:type" content="article" />
+  <meta property="og:image" content="../assets/projects/podcastiq_portfolio_card_hero_neo4j_dense.webp" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="stylesheet" href="../css/project-page.css" />
+  <link rel="stylesheet" href="../css/anim-bg.css" />
+  <script src="../js/anim-bg.js" defer></script>
+</head>
+<body>
+  <script>
+    (function () {
+      var saved = localStorage.getItem('theme');
+      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', saved || (prefersDark ? 'dark' : 'light'));
+      try { if (!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) document.documentElement.classList.add('motion'); } catch (e) {}
+    })();
+  </script>
+
+  <div class="cs-progress" id="csProgress"></div>
+
+  <!-- ===== Header ===== -->
+  <header class="site-header" id="top">
+    <a href="podcastiq.html" class="cs-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Back to case study
+    </a>
+    <nav class="site-nav" aria-label="Section">
+      <a href="#summary">Summary</a>
+      <a href="#users">Users</a>
+      <a href="#requirements">Requirements</a>
+      <a href="#capability">AI behavior</a>
+      <a href="#eval">Evaluation</a>
+      <a href="#safety">Safety</a>
+    </nav>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle light and dark mode">
+      <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+  </header>
+
+  <main>
+    <!-- ===== Hero ===== -->
+    <section class="cs-hero">
+      <p class="eyebrow">Product Requirements Document &middot; AI Podcast Intelligence</p>
+      <h1>PodcastIQ</h1>
+      <p class="cs-lead">The end-to-end AI PRD behind PodcastIQ: a podcast-intelligence platform that makes spoken audio as searchable, comparable, and verifiable as text on the web. A nine-agent system on LangGraph and Snowflake Cortex answers by concept, compares how experts disagree, tracks how a claim drifts across years, and fact-checks assertions against the live web, with every answer cited to the exact timestamp. This is the requirement set the way I scoped, built, and evaluated it as the product manager.</p>
+
+      <dl class="cs-meta doc-info">
+        <div><dt>Product Manager</dt><dd>Dhanvardini Rajendran</dd></div>
+        <div><dt>Document</dt><dd>End-to-end AI PRD, v1.0</dd></div>
+        <div><dt>Status</dt><dd>Shipped &amp; evaluated</dd></div>
+        <div><dt>Stack</dt><dd>LangGraph &middot; Snowflake Cortex &middot; Neo4j</dd></div>
+        <div><dt>Context</dt><dd>DAMG 7374, Northeastern</dd></div>
+        <div><dt>Team</dt><dd>A 3-builder team</dd></div>
+      </dl>
+
+      <div class="cs-hero-actions">
+        <a class="btn btn-primary" href="#summary">Read the document</a>
+        <a class="btn" href="podcastiq.html">Back to the case study</a>
+        <a class="btn" href="#eval">Jump to evaluation</a>
+      </div>
+
+      <div class="cs-chips">
+        <span>GraphRAG retrieval</span><span>Citation on every answer</span><span>Temporal claim tracking</span>
+        <span>95.8% router accuracy</span><span>BERTScore 0.774</span><span>~$0.0012 / query</span>
+      </div>
+    </section>
+
+    <div class="cs-cover">
+      <img src="../assets/projects/podcastiq_portfolio_card_hero_neo4j_dense.webp" alt="PodcastIQ knowledge graph visualization" />
+    </div>
+
+    <!-- ===== 1. Document information ===== -->
+    <section class="cs-section narrow" id="docinfo">
+      <div class="cs-reveal">
+        <p class="cs-label">01 &middot; Document information</p>
+        <h2>What this document covers.</h2>
+        <p>This PRD specifies PodcastIQ as an AI product: the problem and evidence, the users and jobs to be done, the goals and success metrics, the functional requirements, the AI capability and system behavior, the data and retrieval contract, the model and prompt strategy, the evaluation framework, the safety and security posture, and the rollout plan. Numeric targets stated as thresholds are product targets; the measured results reported here reflect live system data at project completion.</p>
+        <div class="cs-table-wrap">
+          <table class="cs-table">
+            <thead><tr><th>Field</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Product</td><td>PodcastIQ, an AI podcast-intelligence platform</td></tr>
+              <tr><td>Type</td><td>Multi-agent retrieval &amp; verification system, 0 to 1</td></tr>
+              <tr><td>Owner</td><td>Dhanvardini Rajendran, Product Manager</td></tr>
+              <tr><td>Team</td><td>A 3-builder team</td></tr>
+              <tr><td>Version</td><td>v1.0, shipped and evaluated</td></tr>
+              <tr><td>Core stack</td><td>LangGraph 9-agent StateGraph, Snowflake Cortex (llama3.1-8b / 70b), Cortex Search, Neo4j, Brave Search, GPT-4o judge</td></tr>
+              <tr><td>Context</td><td>DAMG 7374, Northeastern University, Feb to Apr 2026 (11 weeks)</td></tr>
+              <tr><td>Interface</td><td>Streamlit chat, graph explorer, channel dashboard</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 2. Executive summary ===== -->
+    <section class="cs-section" id="summary">
+      <div class="cs-reveal">
+        <p class="cs-label">02 &middot; Executive summary</p>
+        <h2>A sourced answer, not three hours of airtime.</h2>
+        <p>Over 5 million podcasts hold thousands of hours of expert knowledge, yet audio is fundamentally unsearchable: you cannot Ctrl+F a two-hour conversation. PodcastIQ indexes 300+ episodes across 25 channels and layers a nine-agent system on top, so a user can search by concept, compare how experts disagree, watch a claim evolve across years, and fact-check assertions against the live web, each answer cited to the exact timestamp.</p>
+        <p>The product bet is that combining <strong>vector search with graph traversal (GraphRAG)</strong>, plus a <strong>temporal knowledge graph</strong> and <strong>hybrid fact-checking</strong>, can answer questions a transcript search engine cannot, in under five seconds, with a source on every claim. A Router classifies each query into one of eight intents and dispatches a dedicated specialist; grounded synthesis returns an answer the user can verify in one click.</p>
+        <div class="cs-stats">
+          <div class="cs-stat"><b>9</b><span>Agents (1 router + 8 specialists)</span></div>
+          <div class="cs-stat"><b>95.8%</b><span>Router intent accuracy</span></div>
+          <div class="cs-stat"><b>0.774</b><span>BERTScore F1, generation</span></div>
+          <div class="cs-stat"><b>~$0.0012</b><span>Cost per query</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 3. Background & context ===== -->
+    <section class="cs-section" id="background">
+      <div class="cs-reveal">
+        <p class="cs-label">03 &middot; Background &amp; context</p>
+        <h2>Why a podcast-intelligence agent, and why now.</h2>
+        <p>Podcast knowledge is locked inside audio files with no queryable index. Finding every expert opinion on a topic across 100 episodes means listening to all 100; tracking how an expert&rsquo;s view shifted between 2022 and 2025 is impossible by hand; and claims made on air go unchecked. A generic transcript search engine helps a little but cannot reason over relationships, time, or truth.</p>
+        <p>PodcastIQ was built across an 11-week project as the full lifecycle of an LLM application: a Snowflake warehouse ingests and chunks transcripts, Cortex embeds and indexes them, a claim-extraction pass populates a Neo4j knowledge graph, a temporal layer classifies opinion drift, and a LangGraph router fans queries out to eight specialist agents, all behind a guardrail stack and an independent GPT-4o judge. It is deployed through a Streamlit interface with a chat surface, a graph explorer, and a channel dashboard.</p>
+        <div class="cs-callout">
+          <p class="cs-label">Context</p>
+          <p>PodcastIQ is not a &ldquo;search podcasts&rdquo; tool. It introduces four technically novel components: GraphRAG (graph plus vector retrieval), a temporal knowledge graph that classifies opinion drift, hybrid fact-checking that minimizes paid web calls, and two-tier speaker attribution that identifies who said what without audio diarization.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 4. Problem statement + evidence ===== -->
+    <section class="cs-section" id="problem">
+      <div class="cs-reveal">
+        <p class="cs-label">04 &middot; Problem statement &amp; evidence</p>
+        <h2>Audio is unsearchable, and claims are unaccountable.</h2>
+        <p><strong>Problem:</strong> spoken-word knowledge is trapped in audio files with no queryable index, so users either listen to whole episodes to find one answer or give up, and there is no way to compare speakers, track how a view changed, or check whether a claim holds up.</p>
+        <ul>
+          <li>Finding every expert opinion on a topic across 100 episodes means listening to all 100.</li>
+          <li>There is no way to track how an expert&rsquo;s opinion changed between 2022 and 2025.</li>
+          <li>Claims made on podcasts cannot be automatically fact-checked against the open web.</li>
+          <li>Cross-podcast analysis, comparing what different hosts say about the same topic, is impossible at scale.</li>
+        </ul>
+        <p><strong>Who feels it most:</strong> engineers who need a precise, timestamped answer, researchers who track how thinking moves and whether bold claims hold up, and students who want the gist of an episode plus a next thing to watch, all of whom need a sourced answer, not three hours of airtime.</p>
+        <div class="cs-callout">
+          <p class="cs-label">Evidence from the build</p>
+          <p>The first extraction sorted by view count, which clustered episodes in late 2025 and left the temporal layer too thin to observe drift. A date-spread query diagnosed it, and a time-stratified re-extraction added 36 episodes across 2022 to 2024 in minutes, giving the corpus the multi-year span needed to actually detect 243 claim-evolution pairs (144 contradicted). The need for a temporal layer was not assumed; it was a measured gap in the data.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 5. Target users & personas + JTBD ===== -->
+    <section class="cs-section" id="users">
+      <div class="cs-reveal">
+        <p class="cs-label">05 &middot; Target users, personas &amp; JTBD</p>
+        <h2>Three users, one trusted answer.</h2>
+        <div class="cs-cards">
+          <div class="cs-card">
+            <h3>The Engineer</h3>
+            <p>Builds, and needs a precise answer with a timestamp, not a vibe. Wants to find the exact moment a framework was discussed and jump to the clip.<span class="cs-tradeoff">JTBD: &ldquo;When I need to know what an expert said about a specific topic, give me the exact passage and a link to hear it, so I can act without scrubbing the episode.&rdquo;</span></p>
+          </div>
+          <div class="cs-card">
+            <h3>The Researcher</h3>
+            <p>Tracks how expert thinking moves over time and cares whether bold claims hold up against the open web.<span class="cs-tradeoff">JTBD: &ldquo;When I study a topic, show me how opinion evolved across years and fact-check the strong claims, with sources on both ends.&rdquo;</span></p>
+          </div>
+          <div class="cs-card">
+            <h3>The Student</h3>
+            <p>Learning efficiently, wants the gist of an episode without the full runtime, then a next thing to watch.<span class="cs-tradeoff">JTBD: &ldquo;When I&rsquo;m short on time, summarize the key points and recommend what to watch next, with citations I can trust.&rdquo;</span></p>
+          </div>
+        </div>
+        <h3>Representative user stories</h3>
+        <ul>
+          <li><strong>Engineer, search:</strong> &ldquo;What did an expert say about GPT-5?&rdquo; goes to cited clips with timestamps the user can jump to.</li>
+          <li><strong>Researcher, compare:</strong> &ldquo;Compare two hosts on AI safety&rdquo; goes to grouped agreements, disagreements, and unique takes, each line sourced.</li>
+          <li><strong>Researcher, temporal:</strong> &ldquo;How has AGI opinion changed over time?&rdquo; goes to a narrated drift with the source clip on both ends.</li>
+          <li><strong>Researcher, fact-check:</strong> &ldquo;Fact-check: GPT-5 was released in 2024&rdquo; goes to a verdict with evidence URLs.</li>
+          <li><strong>Student, summarize:</strong> &ldquo;Summarize the key points, then recommend what to watch next&rdquo; goes to a cited synthesis plus ranked recommendations.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== 6. Goals, metrics & non-goals ===== -->
+    <section class="cs-section" id="goals">
+      <div class="cs-reveal">
+        <p class="cs-label">06 &middot; Goals, success metrics &amp; non-goals</p>
+        <h2>What success looks like.</h2>
+        <div class="cs-callout">
+          <p class="cs-label">North Star metric &middot; TTTA</p>
+          <p><strong>Time-to-Trusted-Answer (TTTA)</strong>, the median time for a user to go from a question to a correct, cited answer they can act on without re-listening to the episode. It is the one number that captures the whole bet: retrieval that is fast, generation that is faithful, and a verifiable source on every claim.</p>
+        </div>
+        <h3>Goal tiers</h3>
+        <ul>
+          <li><strong>User goal:</strong> get a correct, sourced answer in seconds, with a one-click link to verify it, instead of listening to whole episodes.</li>
+          <li><strong>Business goal:</strong> prove that GraphRAG plus a temporal layer plus fact-checking answers questions a transcript search engine cannot, while staying under the Snowflake credit budget and free API tiers.</li>
+          <li><strong>Model goal:</strong> route each query to the right specialist, answer only from retrieved sources, cite every claim to a timestamp, and label uncertainty rather than hiding it.</li>
+        </ul>
+        <h3>Success metrics</h3>
+        <div class="cs-table-wrap">
+          <table class="cs-table">
+            <thead><tr><th>Tier</th><th>Metric</th><th>Why it matters</th><th>Target / result</th></tr></thead>
+            <tbody>
+              <tr><td>Primary</td><td>Router intent accuracy</td><td>The wrong agent gives the wrong answer shape</td><td class="ok">95.8%</td></tr>
+              <tr><td>Primary</td><td>p95 end-to-end latency</td><td>The TTTA driver; target under 5s</td><td class="ok">~3.5s</td></tr>
+              <tr><td>Primary</td><td>Generation quality (BERTScore F1)</td><td>Answer fidelity to the source chunks</td><td class="ok">0.774</td></tr>
+              <tr><td>Primary</td><td>Embedding coverage</td><td>No silently un-searchable content</td><td class="ok">100%</td></tr>
+              <tr><td>Counter</td><td>Hallucination rate (GPT-4o judge UNVERIFIED %)</td><td>Speed must not cost faithfulness</td><td>Kept low; judged per answer</td></tr>
+              <tr><td>Counter</td><td>Blocked-query rate</td><td>Guardrails must not over-reject valid questions</td><td>5-layer, fail-open</td></tr>
+              <tr><td>Counter</td><td>Web-search spend</td><td>Cost discipline on paid Brave calls</td><td>Pre-filter caps the calls</td></tr>
+              <tr><td>Qualitative</td><td>Source trust</td><td>&ldquo;Could I verify it myself?&rdquo;</td><td>Deep-link on every claim</td></tr>
+              <tr><td>Qualitative</td><td>Honest uncertainty</td><td>Label low-confidence, do not hide it</td><td>Confidence on attributions</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h3>Targets vs. actuals (corpus build)</h3>
+        <div class="cs-table-wrap">
+          <table class="cs-table">
+            <thead><tr><th>Metric</th><th>Target</th><th>Actual</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>Episodes indexed</td><td>290+</td><td>300+ (incl. re-extraction)</td><td class="ok">Met</td></tr>
+              <tr><td>Searchable chunks</td><td>6,000+</td><td>13,807</td><td class="ok">Met</td></tr>
+              <tr><td>Embedding coverage</td><td>90%+</td><td>100%</td><td class="ok">Met</td></tr>
+              <tr><td>Claims extracted</td><td>1,000+</td><td>8,660</td><td class="ok">Met</td></tr>
+              <tr><td>Claim-evolution pairs</td><td>100+</td><td>243</td><td class="ok">Met</td></tr>
+              <tr><td>Neo4j nodes / edges</td><td>3,000 / 10,000</td><td>10,610 / 27,807</td><td class="ok">3.5x / 2.8x</td></tr>
+              <tr><td>Agents functional</td><td>9 / 9</td><td>9 / 9</td><td class="ok">Met</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h3>Guardrail metrics (ship gates)</h3>
+        <p>These are the limits the product is not allowed to cross. They sit alongside the quality metrics so a faster or cheaper change cannot quietly trade away faithfulness, citations, or latency. Each has a hard ceiling that gates a release.</p>
+        <div class="cs-stats">
+          <div class="cs-stat"><b>&le; 5%</b><span>Hallucination / unsupported-claim rate (GPT-4o judge UNVERIFIED on RAG paths)</span></div>
+          <div class="cs-stat"><b>0%</b><span>Citation-failure rate: no synthesized claim ships without a working deep link</span></div>
+          <div class="cs-stat"><b>&lt; 5s</b><span>P95 end-to-end latency, every path but the gated full fact-check</span></div>
+          <div class="cs-stat"><b>~$0.0012</b><span>Cost per query, against a $0.005 ceiling</span></div>
+        </div>
+        <div class="cs-table-wrap">
+          <table class="cs-table">
+            <thead><tr><th>Guardrail metric</th><th>What it catches</th><th>Ceiling</th><th>Measured</th></tr></thead>
+            <tbody>
+              <tr><td>Hallucination / unsupported-claim rate</td><td>A synthesized answer drifts past its retrieved excerpts</td><td>&le; 5% UNVERIFIED on RAG paths</td><td class="ok">Kept low; judged per answer</td></tr>
+              <tr><td>Citation-failure rate</td><td>A claim ships with a missing or dead deep link</td><td>0% (citation required)</td><td class="ok">URLs validated (50-URL sample)</td></tr>
+              <tr><td>User regeneration rate</td><td>Users re-ask or regenerate, a proxy for an unhelpful first answer</td><td>&le; 15% of answered queries</td><td>Instrumented for production</td></tr>
+              <tr><td>P95 end-to-end latency</td><td>The TTTA driver slips past the speed promise</td><td>&lt; 5s (full fact-check gated separately)</td><td class="ok">~3.5s Summarize</td></tr>
+              <tr><td>Cost per query</td><td>Model and web spend creeps over budget</td><td>$0.005 hard ceiling</td><td class="ok">~$0.0012</td></tr>
+              <tr><td>Web-search spend (cost ceiling)</td><td>Paid Brave calls exhaust the free tier</td><td>&le; 2,000 calls / month (free tier)</td><td class="ok">Pre-filter absorbs 30 to 40%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="cs-callout">
+          <p class="cs-label">Abstention &amp; confidence</p>
+          <p>When retrieval returns no supporting excerpts, the system says it cannot find evidence rather than answering from outside knowledge, and a fact-check that the web cannot settle returns UNVERIFIED rather than a fabricated verdict. Inferred speaker attributions carry an explicit HIGH / MEDIUM / LOW / UNKNOWN label, so the product surfaces uncertainty instead of hiding it.</p>
+        </div>
+        <h3>Non-goals (v1)</h3>
+        <ul>
+          <li>Audio diarization or re-transcription with Whisper; attribution is inferred, not heard.</li>
+          <li>User accounts, multi-language support, and real-time ingestion.</li>
+          <li>A browser extension or collaborative filtering.</li>
+          <li>Answering medical, legal, financial, or private-information questions; those are out of scope by design.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== 7. User journey & use cases ===== -->
+    <section class="cs-section" id="journey">
+      <div class="cs-reveal">
+        <p class="cs-label">07 &middot; User journey &amp; use cases</p>
+        <h2>From a plain-English question to a cited answer.</h2>
+        <p>A user types a normal question into the chat surface. The query is screened by the guardrail stack, classified into one of eight intents by the Router, dispatched to the matching specialist, and returned as a synthesized answer with sources the user can open in one click.</p>
+        <div class="agent-grid">
+          <div class="agent-card"><span class="agent-no">01</span><h3>Ask</h3><span class="agent-model">Plain English</span><p>The user asks a normal question. No knowledge of agents, intents, or timestamps is required.</p></div>
+          <div class="agent-card"><span class="agent-no">02</span><h3>Screen</h3><span class="agent-model">Guardrail stack</span><p>The query passes a 5-layer validation (length, injection, language, scope, semantic) before any agent runs.</p></div>
+          <div class="agent-card"><span class="agent-no">03</span><h3>Route</h3><span class="agent-model">Intent classifier</span><p>The Router classifies into 8 intents and dispatches the right specialist; ambiguity falls back to SEARCH.</p></div>
+          <div class="agent-card"><span class="agent-no">04</span><h3>Answer</h3><span class="agent-model">Cited synthesis</span><p>The specialist returns a grounded answer with deep-linked sources; RAG paths are checked by the GPT-4o judge.</p></div>
+        </div>
+        <h3>Primary use cases</h3>
+        <ul>
+          <li><strong>Concept search:</strong> a topic question answered from the top retrieved chunks, each deep-linked to its timestamp.</li>
+          <li><strong>Cross-speaker comparison:</strong> two speakers or channels contrasted into agreements, disagreements, and unique takes.</li>
+          <li><strong>Temporal drift:</strong> a view tracked across years, with the drift classified and both source clips shown.</li>
+          <li><strong>Fact-check:</strong> a claim verified through the cost-aware three-stage pipeline, returning a verdict and evidence URLs.</li>
+          <li><strong>Relationship query:</strong> a who-appeared-with-whom question resolved as Cypher over the Neo4j graph.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== 8. Scope ===== -->
+    <section class="cs-section" id="scope">
+      <div class="cs-reveal">
+        <p class="cs-label">08 &middot; Scope, MVP &amp; later</p>
+        <h2>What ships now, what comes later.</h2>
+        <div class="prd">
+          <div class="prd-head"><span class="prd-dot"></span><b>PodcastIQ: Scope &amp; MoSCoW</b><span class="prd-file">SCOPE.md</span></div>
+          <div class="prd-panels">
+            <div class="prd-panel is-active">
+              <h4>Scope by priority</h4>
+              <div class="prd-moscow">
+                <div class="col"><h5>Must (MVP)</h5><ul><li>Semantic search + timestamps</li><li>Router + Search + Summarize</li><li>100% embedding coverage</li><li>Cited answers, one-click verify</li><li>Input guardrail stack</li></ul></div>
+                <div class="col"><h5>Should</h5><ul><li>Neo4j graph + Cypher agent</li><li>Claim extraction + attribution</li><li>Temporal drift detection</li><li>Two-tier speaker attribution</li></ul></div>
+                <div class="col"><h5>Could</h5><ul><li>Hybrid fact-checking</li><li>Compare / Recommend / Insight</li><li>Six-part evaluation suite</li><li>GPT-4o cross-model judge</li></ul></div>
+                <div class="col"><h5>Won&rsquo;t (v1)</h5><ul><li>Audio diarization / Whisper</li><li>User accounts &amp; SSO</li><li>Real-time ingestion</li><li>Multi-language, browser extension</li></ul></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="cs-callout">
+          <p class="cs-label">PM note</p>
+          <p>The Insight agent was the explicit cut line: everything above it had to ship and evaluate cleanly first. A nine-agent idea only works if it does not become nine half-built science projects, so grounded search, citations, and the guardrail stack were treated as MVP, not polish.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 9. Functional requirements ===== -->
+    <section class="cs-section" id="requirements">
+      <div class="cs-reveal">
+        <p class="cs-label">09 &middot; Functional requirements</p>
+        <h2>The numbered requirement set.</h2>
+        <p>A Router classifies each query into one of eight intents and dispatches a dedicated specialist. Search to Summarize is the only chained pair; every other agent runs independently and terminates.</p>
+        <div class="cs-table-wrap">
+          <table class="cs-table">
+            <thead><tr><th>ID</th><th>Requirement</th><th>Detail</th></tr></thead>
+            <tbody>
+              <tr><td>FR-01</td><td>Router</td><td>Classify each query into SEARCH, SUMMARIZE, COMPARE, RECOMMEND, GRAPH, TEMPORAL, INSIGHT, or FACTCHECK on llama3.1-8b; fall back to SEARCH on ambiguity so the system never dead-ends.</td></tr>
+              <tr><td>FR-02</td><td>Search</td><td>Hybrid vector plus BM25 retrieval of the top-8 chunks with relevance scores and YouTube deep links, with no LLM call (Cortex Search).</td></tr>
+              <tr><td>FR-03</td><td>Summarize</td><td>Synthesize the retrieved chunks into a cited answer using only the excerpts, with each inline citation linking to the exact timestamp (llama3.1-70b).</td></tr>
+              <tr><td>FR-04</td><td>Knowledge Graph</td><td>Translate natural language to Cypher with a self-healing retry loop (up to 3 attempts), execute over Neo4j, and synthesize the relationship answer.</td></tr>
+              <tr><td>FR-05</td><td>Temporal</td><td>Link a speaker&rsquo;s earlier and later claims by topic, classify the drift, and narrate the change with both source clips (8b + 70b).</td></tr>
+              <tr><td>FR-06</td><td>Fact-Check</td><td>Three stages: claim extraction, an LLM pre-filter, then web search and a verdict (VERIFIED / FALSE / OUTDATED / DISPUTED / UNVERIFIED) with evidence URLs (70b + Brave Search).</td></tr>
+              <tr><td>FR-07</td><td>Compare</td><td>Contrast two speakers or channels on a topic into agreements, disagreements, and unique takes, with each line sourced (8b + 70b).</td></tr>
+              <tr><td>FR-08</td><td>Recommend</td><td>Suggest episodes through a 4-priority fallback chain (guest, channel, topic, recent), ranked by chunk depth (8b + 70b).</td></tr>
+              <tr><td>FR-09</td><td>Insight</td><td>Corpus meta-analysis: most-debated topics, top speakers, and channel drift (llama3.1-70b).</td></tr>
+              <tr><td>FR-10</td><td>Speaker attribution</td><td>Attribute every claim without diarization via a two-tier method, with explicit confidence (HIGH / MEDIUM / LOW / UNKNOWN) mapped to graph edges.</td></tr>
+              <tr><td>FR-11</td><td>Citations</td><td>Every synthesized answer cites its sources, deep-linked to the exact YouTube timestamp so the user can verify in one click.</td></tr>
+              <tr><td>FR-12</td><td>Grounded synthesis</td><td>Answer only from retrieved excerpts on RAG paths; never assert from outside knowledge in a synthesized answer.</td></tr>
+              <tr><td>FR-13</td><td>Guardrail screening</td><td>Pass every user message through the 5-layer guardrail stack before any agent runs.</td></tr>
+              <tr><td>FR-14</td><td>Faithfulness judge</td><td>Run an independent GPT-4o judge on SEARCH and SUMMARIZE answers to score faithfulness to the source chunks.</td></tr>
+              <tr><td>FR-15</td><td>Honest uncertainty</td><td>Surface confidence on attributions and verdicts, and append a standing disclaimer that outputs are AI-generated and should be verified against the linked source.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h3>Speaker attribution (cross-cutting requirement)</h3>
+        <p>Every claim is attributed without audio diarization via a two-tier method: <strong>Tier 1</strong> per-channel title-regex (76.9% guest coverage) with an llama3.1-8b fallback, and <strong>Tier 2</strong> per-claim LLM inference during extraction (zero extra API cost) with explicit confidence (HIGH / MEDIUM / LOW / UNKNOWN). HIGH maps to <code>MADE_CLAIM</code>, MEDIUM to <code>LIKELY_MADE_CLAIM</code>, and UNKNOWN to <code>DISCUSSED_IN</code>.</p>
+      </div>
+    </section>
+
+    <!-- ===== 10. AI capability & system behavior ===== -->
+    <section class="cs-section" id="capability">
+      <div class="cs-reveal">
+        <p class="cs-label">10 &middot; AI capability &amp; system behavior</p>
+        <h2>What the system does, and what it must never do.</h2>
+        <p>A LangGraph StateGraph orchestrates one Router and eight specialist agents over a Snowflake Cortex backbone (llama3.1-8b for routing, 70b for synthesis), Cortex Search for hybrid retrieval, and a Neo4j read projection for relationship reasoning. Each specialist owns its own data path and prompt; only grounded, in-scope queries that clear the guardrail stack reach an agent.</p>
+        <div class="agent-grid">
+          <div class="agent-card"><span class="agent-no">01</span><h3>Router</h3><span class="agent-model">llama3.1-8b</span><p>Zero-shot intent classifier across 8 categories; dispatches the right specialist and falls back to SEARCH on ambiguity.</p></div>
+          <div class="agent-card"><span class="agent-no">02</span><h3>Search</h3><span class="agent-model">Cortex Search</span><p>Hybrid vector plus BM25 retrieval of the top-8 chunks, each with a relevance score and a timestamp deep link.</p></div>
+          <div class="agent-card"><span class="agent-no">03</span><h3>Knowledge Graph</h3><span class="agent-model">70b + Neo4j</span><p>Natural language to Cypher with a self-healing retry loop, executed over a 10,610-node graph, then narrated.</p></div>
+          <div class="agent-card"><span class="agent-no">04</span><h3>Temporal + Fact-Check</h3><span class="agent-model">70b + Brave</span><p>Classifies opinion drift across years and verifies claims through a cost-aware three-stage pipeline.</p></div>
+        </div>
+        <h3>Inputs and outputs</h3>
+        <div class="cs-table-wrap">
+          <table class="cs-table">
+            <thead><tr><th>Direction</th><th>Contract</th></tr></thead>
+            <tbody>
+              <tr><td>Input</td><td>A plain-English question, classified into one of 8 intents after passing the guardrail stack.</td></tr>
+              <tr><td>Output</td><td>A synthesized answer with deep-linked sources; for fact-check, a verdict (VERIFIED / FALSE / OUTDATED / DISPUTED / UNVERIFIED) with evidence URLs; for temporal, a narrated drift with both clips.</td></tr>
+              <tr><td>Refusal</td><td>A clean rejection for out-of-scope, unsafe, or adversarial input, and a fail-open path so infrastructure hiccups never block a valid question.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="cs-callout">
+          <p class="cs-label">What it must never do</p>
+          <p>Never assert a claim in a synthesized answer from outside the retrieved excerpts. Never emit a citation that does not deep-link to a real source. Never present an inferred speaker attribution as certain when confidence is low. Never answer a medical, legal, financial, or private-information question as if it were in scope. Never spend a paid web call on a claim the pre-filter already resolves.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 11. Data & retrieval requirements ===== -->
+    <section class="cs-section" id="data">
+      <div class="cs-reveal">
+        <p class="cs-label">11 &middot; Data &amp; retrieval requirements</p>
+        <h2>The grounding contract.</h2>
+        <p>PodcastIQ&rsquo;s answers are only as trustworthy as its retrieval. A 15-step pipeline moves raw transcripts into a queryable brain over a six-schema Snowflake warehouse (RAW to STAGING to CURATED to SEMANTIC to APP) plus a Neo4j read projection. Transcripts are chunked into ~120-second windows so every citation maps to an addressable, deep-linkable moment, and retrieval is hybrid (vector plus BM25) and re-ranked so both conceptual and exact-term matches surface.</p>
+        <div class="cs-table-wrap">
+          <table class="cs-table">
+            <thead><tr><th>Requirement</th><th>Specification</th></tr></thead>
+            <tbody>
+              <tr><td>Corpus</td><td>25 channels across 6 genres; 300+ episodes; span 2022 to 2025 after time-stratified re-extraction.</td></tr>
+              <tr><td>Chunking</td><td>~120-second windows (~275 words each), 13,807 chunks, so citations are addressable at clip granularity.</td></tr>
+              <tr><td>Embeddings</td><td>Arctic Embed M, 768-dim dense vectors, at 100% coverage (13,807 / 13,807 chunks).</td></tr>
+              <tr><td>Retrieval</td><td>Cortex Search hybrid: vector plus BM25 with re-rank; top-8 chunks returned with relevance scores.</td></tr>
+              <tr><td>Citation granularity</td><td>Cite to the exact chunk and YouTube timestamp, not the whole episode; every citation must deep-link to a real source.</td></tr>
+              <tr><td>Knowledge graph</td><td>8,660 extracted claims projected into Neo4j: 10,610 nodes, 27,807 edges, for relationship and temporal reasoning.</td></tr>
+              <tr><td>Temporal layer</td><td>243 claim-evolution pairs linked by topic and speaker, drift classified (revised / escalated / softened / contradicted / confirmed); 144 contradicted.</td></tr>
+              <tr><td>Source of truth</td><td>Snowflake stays authoritative; Neo4j is a one-way, read-optimized projection synced from it, so there is no dual-write.</td></tr>
+              <tr><td>Efficiency</td><td>Retrieve and inject only the top-8 relevant chunks; the hybrid pipeline keeps prompt tokens and per-query cost down.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 12. Model & prompt strategy ===== -->
+    <section class="cs-section" id="prompts">
+      <div class="cs-reveal">
+        <p class="cs-label">12 &middot; Model &amp; prompt strategy</p>
+        <h2>Two model tiers, orchestrated and pinned.</h2>
+        <p>The reasoning models are Snowflake Cortex Llama: llama3.1-8b for cheap, fast classification (routing, pre-filter, guardrail) and llama3.1-70b for synthesis (summarize, compare, temporal, graph, insight). LangGraph orchestrates them as a StateGraph so each agent reasons on a purpose-built prompt with an explicit output contract, rather than free-generating. An independent GPT-4o judge grades faithfulness so no model grades its own homework.</p>
+        <h3>Prompt strategy</h3>
+        <ul>
+          <li><strong>Model tiering:</strong> the Router runs on 8b because routing is classification, not reasoning, faster and cheaper, validated by the router eval; synthesis runs on 70b where fidelity matters.</li>
+          <li><strong>Grounding instruction:</strong> the Summarize prompt forces &ldquo;answer using ONLY the transcript excerpts&rdquo; plus a mandatory inline citation format, which turns a generative model into a sourced one.</li>
+          <li><strong>Structured output:</strong> claim extraction returns a strict JSON schema (claim text, speaker, role, attribution confidence, claim type, topic, sentiment) so 8,660 claims load without post-parsing, and attribution happens in the same call as extraction at zero extra cost.</li>
+          <li><strong>Sanitized routing:</strong> the Router output is normalized (<code>.strip().upper()</code>) and any unrecognized value falls back to SEARCH so the system never dead-ends.</li>
+          <li><strong>Independent judging:</strong> the GPT-4o judge runs at temperature 0 with a JSON response format, only on SEARCH and SUMMARIZE paths that have source chunks to compare against.</li>
+        </ul>
+        <div class="cs-callout">
+          <p class="cs-label">Prompts as a cost lever</p>
+          <p>The fact-check prompt is a cost control as much as a quality one. A 70b pre-filter answers from training knowledge first and resolves roughly 30 to 40% of claims before any paid Brave call, so the free tier (2,000 per month) is never exhausted and total external spend stays in the single-digit dollars.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 13. UX requirements ===== -->
+    <section class="cs-section" id="ux">
+      <div class="cs-reveal">
+        <p class="cs-label">13 &middot; UX requirements</p>
+        <h2>Show the receipts.</h2>
+        <ul>
+          <li><strong>Plain-English entry:</strong> a single chat box; the user never needs to know agents, intents, or timestamps.</li>
+          <li><strong>Cited answer:</strong> every synthesized answer shows its sources, each deep-linked to the exact YouTube moment so the user can verify in one click.</li>
+          <li><strong>Confidence badges:</strong> attributions and fact-check verdicts carry an explicit confidence or verdict label, not false certainty.</li>
+          <li><strong>Temporal narration:</strong> opinion drift is shown with both the earlier and later clip, so the change is visible, not just asserted.</li>
+          <li><strong>Graph explorer:</strong> a visual surface to browse speaker and topic relationships in the Neo4j graph.</li>
+          <li><strong>Channel dashboard:</strong> corpus-level views of most-debated topics, top speakers, and channel drift.</li>
+          <li><strong>Honest fallbacks:</strong> a blocked or out-of-scope query gets a clear, non-confusing rejection rather than a confident wrong answer.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== 14. Evaluation framework ===== -->
+    <section class="cs-section" id="eval">
+      <div class="cs-reveal">
+        <p class="cs-label">14 &middot; Evaluation framework</p>
+        <h2>Measured at every step, not assumed.</h2>
+        <p>Every number traces back to a six-part evaluation suite (<code>scripts/evaluation/</code>) with a master runner. Each dimension is measured against a target, with an independent GPT-4o judge scoring faithfulness on the RAG paths, so an answer is graded on whether it is fast, faithful, and sourced, not asserted.</p>
+        <div class="cs-stats">
+          <div class="cs-stat"><b>95.8%</b><span>Router intent accuracy</span></div>
+          <div class="cs-stat"><b>0.774</b><span>BERTScore F1, generation</span></div>
+          <div class="cs-stat"><b>100%</b><span>Embedding coverage</span></div>
+          <div class="cs-stat"><b>~3.5s</b><span>p95 latency, Summarize</span></div>
+        </div>
+        <h3>Evaluation rubric</h3>
+        <div class="cs-table-wrap">
+          <table class="cs-table">
+            <thead><tr><th>Dimension</th><th>What it measures</th><th>Method</th><th>Target / result</th></tr></thead>
+            <tbody>
+              <tr><td>Router accuracy</td><td>The query reaches the right specialist</td><td>48 queries (6 x 8 types) vs. ground truth</td><td class="ok">95.8%</td></tr>
+              <tr><td>Retrieval quality</td><td>The right chunks surface for a query</td><td>Precision@1/3/8, MRR, LLM relevance judge (20 queries)</td><td>Measured per query</td></tr>
+              <tr><td>Generation quality</td><td>Answer fidelity to the source chunks</td><td>ROUGE-1/2/L, BERTScore F1, faithfulness / groundedness judge</td><td class="ok">0.774 F1</td></tr>
+              <tr><td>Latency</td><td>Time to a response, per agent</td><td>3 runs x 8 agent types; mean and p95</td><td class="ok">~3.5s Summarize</td></tr>
+              <tr><td>Cost</td><td>Per-query model spend</td><td>Token budget x Cortex pricing</td><td class="ok">~$0.0012</td></tr>
+              <tr><td>Faithfulness</td><td>Answer does not drift from sources</td><td>Independent GPT-4o judge on RAG paths</td><td>UNVERIFIED % kept low</td></tr>
+              <tr><td>Corpus health</td><td>The data behind the answers is sound</td><td>7 pass/fail domain-KPI threshold checks on live data</td><td class="ok">All passed</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h3>Domain KPI thresholds (all passed)</h3>
+        <div class="cs-table-wrap">
+          <table class="cs-table">
+            <thead><tr><th>Check</th><th>Threshold</th><th>Actual</th></tr></thead>
+            <tbody>
+              <tr><td>Chunks indexed</td><td>&ge; 6,000</td><td class="ok">13,807</td></tr>
+              <tr><td>Claims extracted</td><td>&ge; 1,000</td><td class="ok">8,660</td></tr>
+              <tr><td>Evolution pairs</td><td>&ge; 100</td><td class="ok">243</td></tr>
+              <tr><td>Claims with speaker</td><td>&ge; 50%</td><td class="ok">~76.9%</td></tr>
+              <tr><td>Chunks with embeddings</td><td>&ge; 90%</td><td class="ok">100%</td></tr>
+              <tr><td>YouTube URLs valid</td><td>&ge; 95%</td><td class="ok">validated (50-URL sample)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="scorecard">
+          <div class="score-item"><b>95.8%</b><span>Router accuracy</span></div>
+          <div class="score-item"><b>0.774</b><span>BERTScore F1</span></div>
+          <div class="score-item"><b>100%</b><span>Embedding coverage</span></div>
+          <div class="score-item"><b>9 / 9</b><span>Agents functional</span></div>
+        </div>
+        <div class="cs-callout">
+          <p class="cs-label">Latency by agent (mean)</p>
+          <p>Search ~1.5s, Recommend ~2.0s, Fact-Check Stage 1 ~2.5s, Summarize ~3.5s, Temporal ~3.8s, Compare ~4.0s, Insight ~4.2s, Knowledge Graph ~4.5s, Fact-Check full ~5.5s. Every path but the full fact-check sits under the 5s p95 target, and the slowest one is gated behind the cheaper pre-filter stage.</p>
+        </div>
+
+        <h3>Offline golden dataset</h3>
+        <p>The suite runs against a fixed, version-controlled golden set so every change is scored on the same questions. It pairs a held-out set of representative queries with known-good references: 48 routing queries (6 per intent across 8 intents) labelled with the correct specialist, 20 retrieval queries with relevance-judged chunks, and a generation set of question-and-reference-answer pairs scored against the retrieved source. The set is curated, not sampled live, so a regression shows up as a delta on identical inputs rather than noise.</p>
+        <div class="cs-table-wrap">
+          <table class="cs-table">
+            <thead><tr><th>Golden slice</th><th>Size</th><th>Reference label</th><th>Scored by</th></tr></thead>
+            <tbody>
+              <tr><td>Routing</td><td>48 queries (6 x 8 intents)</td><td>Correct specialist intent</td><td>Exact-match accuracy</td></tr>
+              <tr><td>Retrieval</td><td>20 queries</td><td>Relevance-judged chunks</td><td>Precision@1/3/8, MRR, LLM relevance judge</td></tr>
+              <tr><td>Generation</td><td>Question + reference answer pairs</td><td>Source excerpts</td><td>ROUGE, BERTScore F1, faithfulness judge</td></tr>
+              <tr><td>Corpus health</td><td>7 domain-KPI checks</td><td>Threshold values</td><td>Pass / fail on live data</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Human-evaluation rubric</h3>
+        <p>Automated scores are spot-checked by hand against a fixed rubric so a high BERTScore cannot stand in for an answer that is wrong, ungrounded, or unsafe. Each dimension is rated on a sampled set of answers.</p>
+        <div class="cs-table-wrap">
+          <table class="cs-table">
+            <thead><tr><th>Dimension</th><th>Definition</th></tr></thead>
+            <tbody>
+              <tr><td>Correctness</td><td>The answer is factually right given the source material; no claims that contradict the cited excerpts.</td></tr>
+              <tr><td>Groundedness</td><td>Every assertion is supported by a retrieved excerpt, not by the model&apos;s outside knowledge.</td></tr>
+              <tr><td>Relevance</td><td>The answer addresses the actual question asked, without padding or off-topic detours.</td></tr>
+              <tr><td>Completeness</td><td>The answer covers the key points the sources support, not just the first one found.</td></tr>
+              <tr><td>Citation quality</td><td>Citations point to the right chunk and deep-link to the exact timestamp the claim came from.</td></tr>
+              <tr><td>Safety</td><td>The answer stays in scope and refuses medical, legal, financial, or private-information requests.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Automated evaluators</h3>
+        <ul>
+          <li><strong>Routing:</strong> exact-match accuracy of predicted intent vs. the labelled specialist over the golden routing set.</li>
+          <li><strong>Retrieval:</strong> Precision@1/3/8 and MRR over relevance-judged chunks, plus an LLM relevance judge for borderline cases.</li>
+          <li><strong>Generation:</strong> ROUGE-1/2/L for lexical overlap and BERTScore F1 for semantic similarity to the source.</li>
+          <li><strong>Latency and cost:</strong> per-agent mean and p95 timing, and a token-budget times Cortex-pricing cost estimate per query.</li>
+          <li><strong>Corpus health:</strong> 7 pass/fail domain-KPI threshold checks run directly on live warehouse data.</li>
+        </ul>
+
+        <h3>LLM-as-a-judge: GPT-4o faithfulness</h3>
+        <p>An independent GPT-4o judge runs at temperature 0 with a JSON response format on the SEARCH and SUMMARIZE paths, scoring each answer for faithfulness to its retrieved chunks so no Llama model grades its own homework. It is used as an automated faithfulness evaluator at scale, not as a source of truth.</p>
+        <div class="cs-callout">
+          <p class="cs-label">Limitations of the judge (and how it is bounded)</p>
+          <p>An LLM judge carries known biases: positional bias (favoring whichever answer comes first), verbosity bias (rewarding longer answers), and self-preference (a model rating outputs that look like its own more highly). It is a faithfulness signal, not ground truth, so its verdicts are spot-checked against the human rubric on a sampled set, it is held to a different model family than the generators it grades, and it is treated as a fast screen that flags answers for human review rather than a substitute for the golden references.</p>
+        </div>
+
+        <h3>Baseline to beat &amp; target thresholds</h3>
+        <p>The baseline is a transcript keyword-search engine: it cannot route by intent, reason over relationships or time, or cite to a timestamp, so every routed, sourced answer is the bar PodcastIQ has to clear. The thresholds below are the ship gates each dimension is held to.</p>
+        <div class="cs-table-wrap">
+          <table class="cs-table">
+            <thead><tr><th>Dimension</th><th>Baseline (keyword search)</th><th>Target threshold</th><th>Measured</th></tr></thead>
+            <tbody>
+              <tr><td>Router accuracy</td><td>No intent routing</td><td>&ge; 90%</td><td class="ok">95.8%</td></tr>
+              <tr><td>Generation faithfulness (BERTScore F1)</td><td>No synthesis</td><td>&ge; 0.70</td><td class="ok">0.774</td></tr>
+              <tr><td>Embedding coverage</td><td>Lexical index only</td><td>&ge; 90%</td><td class="ok">100%</td></tr>
+              <tr><td>P95 latency</td><td>Sub-second but unsourced</td><td>&lt; 5s</td><td class="ok">~3.5s Summarize</td></tr>
+              <tr><td>Citation on answers</td><td>None</td><td>100%</td><td class="ok">Deep link on every claim</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Regression, adversarial &amp; segment-level testing</h3>
+        <div class="cs-table-wrap">
+          <table class="cs-table">
+            <thead><tr><th>Test type</th><th>What it guards against</th><th>How it runs</th></tr></thead>
+            <tbody>
+              <tr><td>Regression testing</td><td>A prompt, model-tier, or retrieval change quietly degrading a metric</td><td>The full golden suite re-runs on identical inputs; any negative delta on routing, retrieval, generation, latency, or cost blocks the change.</td></tr>
+              <tr><td>Adversarial / red-team</td><td>Prompt injection, jailbreaks, and out-of-scope coaxing reaching an agent</td><td>The 12-pattern injection screen and the scope and semantic layers are probed with crafted inputs; the Router output is fuzzed to confirm it stays bounded to the 8 intents.</td></tr>
+              <tr><td>Segment-level evaluation</td><td>An aggregate score hiding a weak genre or query type</td><td>Routing and generation are broken out by the 6 genres and the 8 query types so a strong overall number cannot mask a failing slice.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Production sampling, cadence &amp; ownership</h3>
+        <div class="cs-table-wrap">
+          <table class="cs-table">
+            <thead><tr><th>Activity</th><th>Cadence</th><th>Owner</th></tr></thead>
+            <tbody>
+              <tr><td>Production answer sampling (judge + human rubric spot-check)</td><td>Continuous sample of live answers</td><td>Product Manager</td></tr>
+              <tr><td>Full golden-suite regression run</td><td>Before every prompt, model, or retrieval change</td><td>Product Manager</td></tr>
+              <tr><td>Adversarial / red-team probe</td><td>Each release, and when new injection techniques surface</td><td>Product Manager</td></tr>
+              <tr><td>Segment-level review (by genre / query type)</td><td>Each evaluation cycle</td><td>Product Manager</td></tr>
+              <tr><td>Eval-set growth from hard cases</td><td>Continuous: low-confidence and contradicted answers fold back in</td><td>Product Manager</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Evaluation is owned end-to-end by the Product Manager, Dhanvardini Rajendran: the golden set, the rubric, the thresholds, and the cadence are all version-controlled product surface area rather than a one-time check.</p>
+      </div>
+    </section>
+
+    <!-- ===== 15. Safety, privacy & security ===== -->
+    <section class="cs-section" id="safety">
+      <div class="cs-reveal">
+        <p class="cs-label">15 &middot; Safety, privacy &amp; security</p>
+        <h2>Screened, scoped, and honest.</h2>
+        <p>Every user message passes <code>validate_query()</code> before any agent runs: a 5-layer stack ordered cheapest-to-most-expensive, so the costly LLM check fires only when the free checks pass.</p>
+        <div class="cs-table-wrap">
+          <table class="cs-table">
+            <thead><tr><th>Layer</th><th>Check</th><th>Cost</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>Query length (3 to 500 chars)</td><td>0ms</td></tr>
+              <tr><td>2</td><td>Prompt-injection (12 regex patterns)</td><td>~1ms</td></tr>
+              <tr><td>3</td><td>Language (Unicode-range; over 20% non-English rejected)</td><td>~1ms</td></tr>
+              <tr><td>4</td><td>Scope (medical / legal / financial / private-info)</td><td>~1ms</td></tr>
+              <tr><td>5</td><td>LLM semantic SAFE / UNSAFE (llama3.1-8b)</td><td>300 to 600ms</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <ul>
+          <li><strong>Grounding as safety:</strong> synthesized answers come only from retrieved excerpts, and an independent GPT-4o judge checks faithfulness on the RAG paths, so a confident hallucination cannot pass as sourced.</li>
+          <li><strong>Fail-open by design:</strong> if Cortex is unavailable, Layer 5 skips, so infrastructure hiccups never block valid questions; the cheap deterministic layers still run.</li>
+          <li><strong>Scoped data:</strong> the corpus is public podcast transcripts; no user accounts or private data are stored, and out-of-scope private-info questions are rejected at Layer 4.</li>
+          <li><strong>Honest uncertainty:</strong> every answer appends a standing disclaimer that attributions and verdicts are AI-generated and should be verified against the linked source.</li>
+          <li><strong>Human in control:</strong> PodcastIQ surfaces sourced answers and confidence; the user reads the receipt and decides, rather than the system asserting truth.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== 16. Prompt-injection & adversarial security ===== -->
+    <section class="cs-section" id="security">
+      <div class="cs-reveal">
+        <p class="cs-label">16 &middot; Prompt-injection &amp; adversarial security</p>
+        <h2>Screened before any model call.</h2>
+        <p>Because the product is trust, an adversarial query must never reach an agent or burn a paid web call. Layer 2 of the guardrail stack screens 12 prompt-injection patterns deterministically before the semantic check, and the Router&rsquo;s output is sanitized and bounded to the 8 known intents so a malformed or injected classification cannot redirect the system. Untrusted content (transcript text, web results) is treated as data, not instructions: synthesis answers from excerpts and the fact-check verdict is constrained to a fixed label set, so injected text inside a source cannot rewrite the agent&rsquo;s behavior.</p>
+        <div class="cs-table-wrap">
+          <table class="cs-table">
+            <thead><tr><th>Surface</th><th>Risk</th><th>Control</th></tr></thead>
+            <tbody>
+              <tr><td>User query</td><td>Direct prompt injection / jailbreak</td><td>12-pattern regex screen at Layer 2, then an 8b semantic SAFE/UNSAFE check at Layer 5.</td></tr>
+              <tr><td>Router output</td><td>Malformed or injected intent</td><td>Output sanitized and bounded to 8 known intents; unrecognized values fall back to SEARCH.</td></tr>
+              <tr><td>Transcript chunks</td><td>Indirect injection from source text</td><td>Excerpts are data, not instructions; the grounding prompt forbids acting on instructions inside sources.</td></tr>
+              <tr><td>Web results</td><td>Injection via fetched evidence</td><td>Fact-check verdict is constrained to a fixed label set with cited URLs, not free generation.</td></tr>
+              <tr><td>Scope abuse</td><td>Coaxing out-of-domain answers</td><td>Layer 4 scope gate rejects medical / legal / financial / private-info topics.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 17. Analytics & experimentation ===== -->
+    <section class="cs-section" id="analytics">
+      <div class="cs-reveal">
+        <p class="cs-label">17 &middot; Analytics &amp; experimentation</p>
+        <h2>Instrument the bet.</h2>
+        <ul>
+          <li><strong>TTTA instrumentation:</strong> track router accuracy, p95 latency, and citation deep-link usage against live queries to measure the North Star in production.</li>
+          <li><strong>Counter-metrics:</strong> monitor the GPT-4o judge UNVERIFIED rate, the blocked-query rate, and Brave web-search spend so speed and breadth are not bought with faithfulness or cost.</li>
+          <li><strong>Eval as harness:</strong> the six-part suite is the experimentation harness; a new prompt, model tier, or retrieval change is scored against router, retrieval, generation, latency, cost, and domain-KPI dimensions before it ships.</li>
+          <li><strong>Feedback to corpus:</strong> a planned loop turns low-confidence answers and contradicted claims into new evaluation cases, so the eval set grows with the hard questions the system gets wrong.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== 18. Non-functional ===== -->
+    <section class="cs-section" id="nonfunctional">
+      <div class="cs-reveal">
+        <p class="cs-label">18 &middot; Non-functional requirements</p>
+        <h2>Latency, cost, availability.</h2>
+        <div class="cs-table-wrap">
+          <table class="cs-table">
+            <thead><tr><th>Attribute</th><th>Requirement</th></tr></thead>
+            <tbody>
+              <tr><td>Latency</td><td>p95 under 5s end-to-end; every agent but the full fact-check measured under target, with screening and routing adding minimal overhead.</td></tr>
+              <tr><td>Cost</td><td>~$0.0012 per query; the whole project ran under a 600-credit Snowflake budget (~58% utilization, ~348 to 358 credits), with model tiering and the fact-check pre-filter as the main cost levers.</td></tr>
+              <tr><td>Availability</td><td>Deployed through a Streamlit interface; external APIs (Brave Search, YouTube) on free tiers and Neo4j in local Docker, so infrastructure cost stays near zero.</td></tr>
+              <tr><td>Reliability</td><td>Fail-open guardrails and a self-healing Cypher retry loop keep the system responsive when a layer or query fails; structured output keeps responses well-formed.</td></tr>
+              <tr><td>Scalability</td><td>A six-schema Snowflake warehouse with sized warehouses (X-SMALL) and auto-suspend (60 to 300s) so compute scales to load and idles to zero.</td></tr>
+              <tr><td>Maintainability</td><td>Prompts and the evaluation suite are versioned product surface area; Neo4j as a read projection avoids dual-write complexity.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h3>Warehouse configuration</h3>
+        <div class="cs-table-wrap">
+          <table class="cs-table">
+            <thead><tr><th>Warehouse</th><th>Size</th><th>Auto-suspend</th></tr></thead>
+            <tbody>
+              <tr><td>LOADING_WH</td><td>X-SMALL</td><td>60s</td></tr>
+              <tr><td>TRANSFORM_WH</td><td>X-SMALL</td><td>300s</td></tr>
+              <tr><td>SEARCH_WH</td><td>X-SMALL</td><td>60s</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 19. Edge cases & fallbacks ===== -->
+    <section class="cs-section" id="edgecases">
+      <div class="cs-reveal">
+        <p class="cs-label">19 &middot; Edge cases &amp; fallbacks</p>
+        <h2>What happens when it&rsquo;s not clean.</h2>
+        <div class="cs-table-wrap">
+          <table class="cs-table">
+            <thead><tr><th>Edge case</th><th>Behavior</th></tr></thead>
+            <tbody>
+              <tr><td>Ambiguous intent</td><td>The Router falls back to SEARCH so the query still returns sourced chunks rather than dead-ending.</td></tr>
+              <tr><td>No relevant chunks retrieved</td><td>Synthesis reports that it cannot find supporting excerpts rather than answering from outside knowledge.</td></tr>
+              <tr><td>Cypher generation fails</td><td>The Knowledge Graph agent retries up to 3 times with a self-healing loop before reporting it cannot resolve the relationship.</td></tr>
+              <tr><td>Fact-check claim already known</td><td>The Stage 2 pre-filter resolves it from training knowledge, with no paid web call.</td></tr>
+              <tr><td>Brave rate limit or outage</td><td>The pre-filter absorbs ~30 to 40% of claims; uncertain claims return UNVERIFIED rather than a fabricated verdict.</td></tr>
+              <tr><td>Cortex unavailable</td><td>Layer 5 of the guardrail skips (fail-open) so valid questions are not blocked by an infrastructure hiccup.</td></tr>
+              <tr><td>Low-confidence attribution</td><td>The claim is tagged DISCUSSED_IN with explicit low confidence rather than asserting a speaker.</td></tr>
+              <tr><td>Out-of-scope or unsafe query</td><td>Rejected at the scope or semantic layer with a clear message, before any agent runs.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 20. Dependencies, risks & assumptions ===== -->
+    <section class="cs-section" id="risks">
+      <div class="cs-reveal">
+        <p class="cs-label">20 &middot; Dependencies, risks &amp; assumptions</p>
+        <h2>What this depends on, and what could go wrong.</h2>
+        <h3>Dependencies</h3>
+        <ul>
+          <li>Snowflake Cortex for LLMs (llama3.1-8b / 70b), embeddings (Arctic Embed M), and Cortex Search.</li>
+          <li>LangGraph for the 9-agent orchestration; Neo4j (local Docker) for the graph read projection.</li>
+          <li>Brave Search API for live fact-checking; the YouTube API and yt-dlp for transcript extraction.</li>
+          <li>OpenAI GPT-4o as the independent faithfulness judge; Streamlit for the interface.</li>
+        </ul>
+        <h3>Risks &amp; mitigations</h3>
+        <div class="cs-table-wrap">
+          <table class="cs-table">
+            <thead><tr><th>Risk</th><th>Mitigation</th></tr></thead>
+            <tbody>
+              <tr><td>Sparse temporal data (extraction clustered in late 2025)</td><td>Time-stratified re-extraction added 36 episodes across 2022 to 2024 to widen the span.</td></tr>
+              <tr><td>Fact-check cost / rate limits</td><td>The LLM pre-filter resolves ~30 to 40% of claims before any paid web call.</td></tr>
+              <tr><td>Attribution without audio</td><td>A two-tier method with explicit confidence scoring, not false certainty.</td></tr>
+              <tr><td>Scope creep across 9 agents</td><td>A hard MVP-first priority; the Insight agent was the explicit cut line.</td></tr>
+              <tr><td>Hallucinated answers</td><td>A grounded RAG prompt plus an independent GPT-4o judge on the RAG paths.</td></tr>
+              <tr><td>Prompt injection</td><td>A 5-layer guardrail with a 12-pattern injection screen and a bounded, sanitized Router output.</td></tr>
+              <tr><td>Credit-budget overrun</td><td>Model tiering, X-SMALL warehouses with auto-suspend, and the fact-check pre-filter kept usage near 58% of the cap.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h3>Assumptions</h3>
+        <ul>
+          <li>YouTube transcripts are accurate enough to chunk, embed, and cite reliably.</li>
+          <li>Users ask in plain English about real topics, not for medical, legal, or financial advice.</li>
+          <li>The corpus is representative enough that drift and comparison answers are meaningful.</li>
+          <li>A user will open the deep-linked source to verify a high-stakes answer rather than trusting it blindly.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== 21. Rollout & monitoring ===== -->
+    <section class="cs-section" id="rollout">
+      <div class="cs-reveal">
+        <p class="cs-label">21 &middot; Rollout &amp; monitoring</p>
+        <h2>Ship, watch, and deepen.</h2>
+        <h3>Shipped (v1)</h3>
+        <p>All 9 agents functional end-to-end, evaluated across six dimensions, behind a 5-layer guardrail with a cross-model GPT-4o judge, served through a Streamlit chat interface with a graph explorer and a channel dashboard. The corpus spans 300+ episodes and 13,807 chunks at 100% embedding coverage, with 8,660 claims and 243 evolution pairs in the graph.</p>
+        <h3>Monitoring</h3>
+        <ul>
+          <li>Instrument TTTA: router accuracy, p95 latency, and citation deep-link usage on live queries.</li>
+          <li>Watch the counter-metrics: GPT-4o UNVERIFIED rate, blocked-query rate, and Brave web-search spend.</li>
+          <li>Track the credit budget against the X-SMALL warehouse auto-suspend behavior so cost stays under cap.</li>
+        </ul>
+
+        <h3>Observability &amp; per-response traceability</h3>
+        <p>Every response is traceable to the exact configuration that produced it, so a regression or a bad answer can be reproduced and root-caused rather than guessed at. Each answer carries a trace of the pieces below.</p>
+        <div class="cs-table-wrap">
+          <table class="cs-table">
+            <thead><tr><th>Traced field</th><th>What it pins down</th></tr></thead>
+            <tbody>
+              <tr><td>Model version</td><td>The exact Cortex model per step (llama3.1-8b routing, 70b synthesis) and the GPT-4o judge build.</td></tr>
+              <tr><td>Prompt version</td><td>The versioned prompt used for routing, synthesis, extraction, and judging, so a prompt change is attributable.</td></tr>
+              <tr><td>Retrieval config</td><td>Top-k, hybrid vector plus BM25 settings, re-rank, and the chunk IDs actually injected.</td></tr>
+              <tr><td>Route &amp; guardrail trace</td><td>The classified intent, the guardrail layers cleared, and any fail-open path taken.</td></tr>
+              <tr><td>Judge verdict</td><td>The GPT-4o faithfulness score and label attached to the answer for sampling and audit.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Model &amp; prompt change management</h3>
+        <ul>
+          <li>Prompts and the evaluation suite are version-controlled product surface area, not loose strings, so every change has a diff and an owner.</li>
+          <li>No model-tier or prompt change ships without re-running the full golden suite; a negative delta on any dimension blocks it.</li>
+          <li>Model versions are pinned per agent so an upstream model swap is a deliberate, evaluated decision rather than a silent drift.</li>
+          <li>The per-response trace ties a production regression back to the specific model and prompt version that caused it, so rollbacks are targeted.</li>
+        </ul>
+
+        <h3>What I would do next</h3>
+        <ul>
+          <li>Add Whisper diarization to push speaker attribution toward ground truth.</li>
+          <li>Real-time ingestion so the graph updates as new episodes drop.</li>
+          <li>Expose PodcastIQ search as a custom MCP server for other LLM apps.</li>
+          <li>Process all 13,807 chunks for claims (projected ~51,600) to deepen the graph.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== Decision log ===== -->
+    <section class="cs-section" id="decisions">
+      <div class="cs-reveal">
+        <p class="cs-label">Decision log</p>
+        <h2>What I chose, and why.</h2>
+        <div class="cs-table-wrap">
+          <table class="cs-table">
+            <thead><tr><th>Decision</th><th>Rationale</th><th>Tradeoff</th></tr></thead>
+            <tbody>
+              <tr><td>Router on 8b, synthesis on 70b</td><td>Routing is classification, not reasoning; the cheap tier is faster and validated by the router eval</td><td>A model-tiering boundary to maintain across agents</td></tr>
+              <tr><td>Two-tier attribution over diarization</td><td>Title parsing plus LLM inference tags claims with a speaker at zero extra cost</td><td>~77% guest coverage, modeled with explicit confidence rather than certainty</td></tr>
+              <tr><td>Hybrid fact-checking</td><td>A free LLM pre-filter resolves ~30 to 40% of claims before any paid web call</td><td>Some claims stay UNVERIFIED rather than forcing a verdict</td></tr>
+              <tr><td>120-second time chunks</td><td>Fixed windows keep YouTube deep-linking simple and chunk sizes consistent</td><td>A few ideas get split across a chunk boundary</td></tr>
+              <tr><td>Neo4j as a read projection</td><td>Snowflake stays the source of truth; the graph is a one-way, read-optimized view</td><td>A sync step, in exchange for no dual-write complexity</td></tr>
+              <tr><td>Independent GPT-4o judge</td><td>Avoids a Llama model grading its own homework on the RAG paths</td><td>Single-digit-dollar judge spend during development</td></tr>
+              <tr><td>MVP-first scope, Insight as cut line</td><td>A nine-agent idea only ships if it does not become nine science projects</td><td>The richest meta-analysis agent landed last, after the core paths evaluated cleanly</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Pager ===== -->
+    <nav class="cs-pager">
+      <a href="podcastiq.html"><span>Back to case study</span><b>&larr; PodcastIQ</b></a>
+      <a href="../projects.html"><span>Next</span><b>All projects &rarr;</b></a>
+    </nav>
+  </main>
+
+  <!-- ===== Footer ===== -->
+    <footer class="site-footer" id="contact">
+    <div class="footer-row">
+      <span class="footer-name">Dhanvardini Rajendran</span>
+      <nav class="footer-links" aria-label="Contact">
+        <a href="mailto:dhanvardini.rajendran@gmail.com">Email</a>
+        <a href="https://www.linkedin.com/in/dhanvardini/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/DhanvardiniRajendran25" target="_blank" rel="noopener">GitHub</a>
+        <a href="../assets/resume.pdf" download>Resume</a>
+      </nav>
+    </div>
+    <p class="footer-fine">&copy; <span id="year"></span> Dhanvardini Rajendran &middot; Built from scratch.</p>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+  <script src="../js/project-page.js"></script>
+</body>
+</html>

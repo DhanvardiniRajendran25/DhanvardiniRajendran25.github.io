@@ -1,0 +1,16 @@
+# tooling / deps
+node_modules/
+.imgtools/
+*.log
+
+# private source material (NOT for publishing)
+assets/project_files/
+content/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# internal dev docs (keep private)
+CLAUDE.md
+TASKS.md

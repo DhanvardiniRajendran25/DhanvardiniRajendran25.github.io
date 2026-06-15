@@ -1,0 +1,161 @@
+/* =========================================================
+   End-to-end PRD document pages (PodcastIQ, CourtVision...).
+   Screen view = clean document; print view = paginated PDF.
+   Inherits design tokens from styles.css.
+   ========================================================= */
+
+.prd-doc {
+  --doc-w: 880px;
+  color: var(--ink);
+  background: var(--bg);
+}
+
+/* ---------- Sticky action bar (hidden in print) ---------- */
+.doc-bar {
+  position: sticky; top: 0; z-index: 40;
+  display: flex; align-items: center; gap: 1rem;
+  padding: 0.7rem clamp(1rem, 4vw, 2rem);
+  background: color-mix(in srgb, var(--bg) 86%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.doc-bar .doc-back {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  font-size: 0.88rem; font-weight: 600; color: var(--ink-soft);
+}
+.doc-bar .doc-back:hover { color: var(--accent); }
+.doc-bar .doc-back svg { width: 16px; height: 16px; }
+.doc-bar .doc-spacer { flex: 1; }
+.doc-bar .doc-file { font-family: ui-monospace, monospace; font-size: 0.78rem; color: var(--ink-faint); }
+
+/* ---------- Document body ---------- */
+.doc {
+  max-width: var(--doc-w);
+  margin: 0 auto;
+  padding: clamp(1.5rem, 5vw, 3.5rem) clamp(1rem, 4vw, 2rem) 5rem;
+}
+
+/* Cover */
+.doc-cover { border-bottom: 2px solid var(--ink); padding-bottom: 1.6rem; margin-bottom: 2rem; }
+.doc-cover .doc-kicker {
+  font-size: 0.74rem; font-weight: 700; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--accent); margin-bottom: 0.6rem;
+}
+.doc-cover h1 { font-size: clamp(2rem, 5vw, 3rem); margin: 0 0 0.6rem; line-height: 1.05; }
+.doc-cover .doc-tagline { font-size: 1.1rem; color: var(--ink-soft); margin: 0 0 1.4rem; max-width: 60ch; }
+.doc-meta {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.8rem 1.4rem;
+}
+.doc-meta div { font-size: 0.85rem; }
+.doc-meta dt { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 0.2rem; }
+.doc-meta dd { margin: 0; font-weight: 600; }
+
+/* Table of contents */
+.doc-toc {
+  background: var(--bg-elev); border: 1px solid var(--line);
+  border-radius: var(--radius-sm); padding: 1.3rem 1.6rem; margin-bottom: 2.5rem;
+}
+.doc-toc h2 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-faint); margin: 0 0 0.8rem; }
+.doc-toc ol { columns: 2; column-gap: 2rem; margin: 0; padding-left: 1.2rem; }
+@media (max-width: 600px) { .doc-toc ol { columns: 1; } }
+.doc-toc li { margin-bottom: 0.4rem; font-size: 0.9rem; }
+.doc-toc a { color: var(--ink-soft); }
+.doc-toc a:hover { color: var(--accent); }
+
+/* Sections */
+.doc section { margin-bottom: 2.6rem; }
+.doc h2.doc-h {
+  font-size: clamp(1.4rem, 3vw, 1.9rem);
+  padding-bottom: 0.4rem; margin: 0 0 1rem;
+  border-bottom: 1px solid var(--line);
+  display: flex; align-items: baseline; gap: 0.7rem;
+}
+.doc h2.doc-h .num { font-family: ui-monospace, monospace; font-size: 0.95rem; color: var(--accent); }
+.doc h3 { font-size: 1.12rem; margin: 1.6rem 0 0.6rem; }
+.doc h4 { font-size: 0.98rem; margin: 1.2rem 0 0.4rem; color: var(--ink); }
+.doc p { color: var(--ink-soft); line-height: 1.6; margin: 0 0 0.9rem; max-width: 72ch; }
+.doc p strong, .doc li strong { color: var(--ink); }
+.doc ul, .doc ol.body-list { color: var(--ink-soft); line-height: 1.55; padding-left: 1.3rem; margin: 0 0 1rem; max-width: 72ch; }
+.doc li { margin-bottom: 0.45rem; }
+
+/* Lead / callout */
+.doc-lead {
+  font-size: 1.08rem; color: var(--ink); line-height: 1.6;
+  border-left: 4px solid var(--accent); padding: 0.2rem 0 0.2rem 1.1rem; margin-bottom: 1.4rem;
+}
+.doc-note {
+  background: color-mix(in srgb, var(--accent) 7%, var(--bg-elev));
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--line));
+  border-radius: var(--radius-sm); padding: 1rem 1.2rem; margin: 1rem 0;
+}
+.doc-note p { margin: 0; font-size: 0.92rem; }
+.doc-note b { color: var(--accent); }
+
+/* Tables */
+.doc-table { width: 100%; border-collapse: collapse; margin: 1rem 0 1.4rem; font-size: 0.88rem; }
+.doc-table caption { text-align: left; font-size: 0.8rem; color: var(--ink-faint); margin-bottom: 0.4rem; }
+.doc-table th, .doc-table td { text-align: left; padding: 0.55rem 0.7rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+.doc-table th { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-faint); background: var(--bg-elev); }
+.doc-table tr:last-child td { border-bottom: 0; }
+.doc-table .ok { color: #4f9f55; font-weight: 700; }
+.doc-table .warn { color: #d6604f; font-weight: 700; }
+
+/* Code blocks (prompts) */
+.doc pre {
+  background: #0e1118; color: #d7dcea;
+  border: 1px solid var(--line); border-radius: var(--radius-sm);
+  padding: 1rem 1.2rem; overflow-x: auto; margin: 0.7rem 0 1.3rem;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.8rem; line-height: 1.5;
+}
+.doc pre .c { color: #7f8aa6; }
+.doc pre b { color: #e8c07d; font-weight: 600; }
+.doc code:not(pre code) {
+  font-family: ui-monospace, monospace; font-size: 0.84em;
+  background: var(--bg-elev); border: 1px solid var(--line);
+  border-radius: 5px; padding: 0.05rem 0.35rem; color: var(--ink);
+}
+
+/* Requirement table tags */
+.req-id { font-family: ui-monospace, monospace; font-weight: 700; color: var(--accent); white-space: nowrap; }
+.pri { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; padding: 0.1rem 0.45rem; border-radius: 5px; white-space: nowrap; }
+.pri.must { background: rgba(111,191,115,0.18); color: #4f9f55; }
+.pri.should { background: rgba(224,179,79,0.2); color: #b8881f; }
+.pri.could { background: var(--accent-soft); color: var(--accent); }
+.pri.wont { background: var(--line); color: var(--ink-faint); }
+
+/* persona cards */
+.persona-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1rem 0; }
+@media (max-width: 720px) { .persona-grid { grid-template-columns: 1fr; } }
+.persona { background: var(--bg-elev); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 1.1rem 1.2rem; }
+.persona h4 { margin: 0 0 0.1rem; }
+.persona .role { font-size: 0.78rem; color: var(--accent); font-weight: 600; margin: 0 0 0.6rem; }
+.persona p { font-size: 0.86rem; margin-bottom: 0.5rem; }
+.persona ul { font-size: 0.84rem; padding-left: 1.1rem; margin: 0; }
+
+/* metric chips row */
+.doc-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px,1fr)); gap: 0.7rem; margin: 1rem 0 1.3rem; }
+.doc-metric { background: var(--bg-elev); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 0.9rem; text-align: center; }
+.doc-metric b { display: block; font-family: var(--font-display); font-size: 1.4rem; color: var(--accent); line-height: 1; }
+.doc-metric span { display: block; margin-top: 0.3rem; font-size: 0.74rem; color: var(--ink-soft); }
+
+.doc-foot { border-top: 1px solid var(--line); margin-top: 2.5rem; padding-top: 1.2rem; font-size: 0.82rem; color: var(--ink-faint); }
+
+/* ---------- Print ---------- */
+@media print {
+  :root { --bg: #fff; --bg-elev: #fff; --ink: #111; --ink-soft: #333; --ink-faint: #666; --line: #ccc; }
+  .doc-bar { display: none !important; }
+  .prd-doc { background: #fff; }
+  .doc { max-width: none; padding: 0; }
+  .doc-cover { border-color: #111; }
+  .doc section { margin-bottom: 1.6rem; break-inside: avoid-page; }
+  .doc h2.doc-h { break-after: avoid; }
+  .doc h3, .doc h4 { break-after: avoid; }
+  .doc-table, .doc pre, .persona, .doc-note, .req-row { break-inside: avoid; }
+  .doc pre { background: #f4f5f7; color: #1a1a1a; border-color: #ccc; }
+  .doc pre .c { color: #6a7280; }
+  .doc pre b { color: #8a5a00; }
+  .doc-toc { break-after: page; }
+  a { color: #111 !important; text-decoration: none; }
+  @page { margin: 16mm 14mm; }
+}

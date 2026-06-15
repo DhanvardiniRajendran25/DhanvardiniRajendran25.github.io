@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gallery · Dhanvardini Rajendran</title>
+  <meta name="description" content="A few moments along the way: Optum, Boston, the community, and the awards." />
+  <meta property="og:title" content="Gallery · Dhanvardini Rajendran" />
+  <meta property="og:description" content="A few moments along the way: Optum, Boston, the community, and the awards." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="assets/headshot.webp" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/anim-bg.css" />
+  <script src="js/anim-bg.js" defer></script>
+</head>
+<body>
+  <script>
+    (function () {
+      var saved = localStorage.getItem("theme");
+      var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.setAttribute("data-theme", saved || (prefersDark ? "dark" : "light"));
+      try { if (!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches)) document.documentElement.classList.add("motion"); } catch (e) {}
+    })();
+  </script>
+  <header class="site-header" id="top">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">DR</span>
+      <span class="brand-name">Dhanvardini Rajendran</span>
+    </a>
+    <nav class="site-nav" aria-label="Primary">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="story.html">Story</a>
+      <a href="experience.html">Experience</a>
+      <a href="education.html">Education</a>
+      <a href="skills.html">Skills</a>
+      <a href="awards.html">Awards</a>
+      <a href="projects.html">Projects</a>
+      <a href="gallery.html" class="is-active" aria-current="page">Gallery</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle light and dark mode">
+      <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+  </header>
+
+  <main>
+<section class="gallery has-anim-bg" id="gallery">
+      <div class="anim-bg" data-bg="blobs" aria-hidden="true"><span></span><span></span><span></span></div>
+      <div class="section-head reveal">
+        <p class="eyebrow">Gallery</p>
+        <h2>A few moments along the way.</h2>
+        <p class="lede">From training teams at Optum to Boston, the community, and the awards. Click any photo to enlarge.</p>
+      </div>
+      <div class="gallery-filters reveal" id="galleryFilters">
+        <button class="pfilter is-active" data-filter="all" type="button">All</button>
+        <button class="pfilter" data-filter="optum" type="button">Optum</button>
+        <button class="pfilter" data-filter="neu" type="button">Northeastern</button>
+        <button class="pfilter" data-filter="community" type="button">Community &amp; Leadership</button>
+        <button class="pfilter" data-filter="awards" type="button">Awards</button>
+      </div>
+      <div class="gallery-grid" id="galleryGrid">
+        <figure class="gallery-item" data-chapter="community"><img src="assets/gallery/11_pc2.0.webp" alt="Product Conference" loading="lazy"><figcaption>Product Conference</figcaption></figure>
+        <figure class="gallery-item" data-chapter="awards"><img src="assets/gallery/1_laurel_and_scroll.webp" alt="Laurel and Scroll 100" loading="lazy"><figcaption>Laurel &amp; Scroll 100</figcaption></figure>
+        <figure class="gallery-item" data-chapter="community"><img src="assets/gallery/14_pc2.0.webp" alt="Product Conference" loading="lazy"><figcaption>Product Conference</figcaption></figure>
+        <figure class="gallery-item" data-chapter="neu"><img src="assets/gallery/3_graduation.webp" alt="Northeastern graduation" loading="lazy"><figcaption>Graduation, Northeastern</figcaption></figure>
+        <figure class="gallery-item" data-chapter="optum"><img src="assets/gallery/19_optum.webp" alt="Training the team at Optum" loading="lazy"><figcaption>Training the team at Optum</figcaption></figure>
+        <figure class="gallery-item" data-chapter="community"><img src="assets/gallery/16_ta.webp" alt="Teaching as a Graduate TA" loading="lazy"><figcaption>Teaching as a Graduate TA</figcaption></figure>
+        <figure class="gallery-item" data-chapter="awards"><img src="assets/gallery/7_awsreinvent.webp" alt="AWS re:Invent" loading="lazy"><figcaption>AWS re:Invent</figcaption></figure>
+        <figure class="gallery-item" data-chapter="community"><img src="assets/gallery/17_startupboston.webp" alt="Startup Boston Week" loading="lazy"><figcaption>Startup Boston Week</figcaption></figure>
+        <figure class="gallery-item" data-chapter="community"><img src="assets/gallery/10_pc3.0.webp" alt="Product Conference" loading="lazy"><figcaption>Product Conference</figcaption></figure>
+        <figure class="gallery-item" data-chapter="neu"><img src="assets/gallery/4_fenway.webp" alt="Boston life at Fenway" loading="lazy"><figcaption>Boston life, Fenway</figcaption></figure>
+        <figure class="gallery-item" data-chapter="awards"><img src="assets/gallery/5_coeaward.webp" alt="College of Engineering Award" loading="lazy"><figcaption>College of Engineering Award</figcaption></figure>
+        <figure class="gallery-item" data-chapter="community"><img src="assets/gallery/15_gli.webp" alt="Graduate Leadership Institute" loading="lazy"><figcaption>Graduate Leadership Institute</figcaption></figure>
+        <figure class="gallery-item" data-chapter="optum"><img src="assets/gallery/20_optum.webp" alt="With the Optum product team" loading="lazy"><figcaption>With the Optum team</figcaption></figure>
+        <figure class="gallery-item" data-chapter="awards"><img src="assets/gallery/6_mgenaward.webp" alt="MGEN Award" loading="lazy"><figcaption>MGEN Award</figcaption></figure>
+        <figure class="gallery-item" data-chapter="community"><img src="assets/gallery/18_startupboston.webp" alt="Startup Boston Week" loading="lazy"><figcaption>Startup Boston Week</figcaption></figure>
+        <figure class="gallery-item" data-chapter="community"><img src="assets/gallery/12_pc2.0.webp" alt="Product Conference" loading="lazy"><figcaption>Product Conference</figcaption></figure>
+        <figure class="gallery-item" data-chapter="awards"><img src="assets/gallery/2_LnS.webp" alt="Laurel and Scroll 100" loading="lazy"><figcaption>Laurel &amp; Scroll 100</figcaption></figure>
+        <figure class="gallery-item" data-chapter="community"><img src="assets/gallery/13_pc2.0.webp" alt="Product Conference" loading="lazy"><figcaption>Product Conference</figcaption></figure>
+        <figure class="gallery-item" data-chapter="awards"><img src="assets/gallery/8_awsreinvent.webp" alt="AWS re:Invent" loading="lazy"><figcaption>AWS re:Invent</figcaption></figure>
+        <figure class="gallery-item" data-chapter="awards"><img src="assets/gallery/9_awsreinvent.webp" alt="AWS re:Invent" loading="lazy"><figcaption>AWS re:Invent</figcaption></figure>
+      </div>
+    </section>
+  </main>
+
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <button class="lightbox-close" type="button" aria-label="Close">&times;</button>
+    <figure class="lightbox-fig"><img src="" alt=""><figcaption class="lightbox-cap"></figcaption></figure>
+  </div>
+
+    <footer class="site-footer" id="contact">
+    <div class="footer-row">
+      <span class="footer-name">Dhanvardini Rajendran</span>
+      <nav class="footer-links" aria-label="Contact">
+        <a href="mailto:dhanvardini.rajendran@gmail.com">Email</a>
+        <a href="https://www.linkedin.com/in/dhanvardini/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/DhanvardiniRajendran25" target="_blank" rel="noopener">GitHub</a>
+        <a href="assets/resume.pdf" download>Resume</a>
+      </nav>
+    </div>
+    <p class="footer-fine">&copy; <span id="year"></span> Dhanvardini Rajendran &middot; Built from scratch.</p>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

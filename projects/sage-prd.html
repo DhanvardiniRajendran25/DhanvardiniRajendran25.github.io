@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SAGE: AI Product Requirements Document &middot; Dhanvardini Rajendran</title>
+  <meta name="description" content="The complete AI-product PRD for SAGE, an enterprise AI compliance assistant: grounded, cited answers over policy documents, policy-conflict detection, a hardened prompt-security pipeline, evaluation framework, and rollout. 100% attack block rate, 91%+ accuracy." />
+
+  <meta property="og:title" content="SAGE: AI Product Requirements Document" />
+  <meta property="og:description" content="The end-to-end AI PRD for SAGE: grounded compliance QA, citations, conflict detection, prompt-injection hardening, and evaluation." />
+  <meta property="og:type" content="article" />
+  <meta property="og:image" content="../assets/projects/sage_compliance_card_hero.webp" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="stylesheet" href="../css/project-page.css" />
+  <link rel="stylesheet" href="../css/anim-bg.css" />
+  <script src="../js/anim-bg.js" defer></script>
+</head>
+<body>
+  <script>
+    (function () {
+      var saved = localStorage.getItem('theme');
+      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', saved || (prefersDark ? 'dark' : 'light'));
+      try { if (!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) document.documentElement.classList.add('motion'); } catch (e) {}
+    })();
+  </script>
+
+  <div class="cs-progress" id="csProgress"></div>
+
+  <!-- ===== Header ===== -->
+  <header class="site-header" id="top">
+    <a href="sage.html" class="cs-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Back to case study
+    </a>
+    <nav class="site-nav" aria-label="Section">
+      <a href="#summary">Summary</a>
+      <a href="#users">Users</a>
+      <a href="#requirements">Requirements</a>
+      <a href="#capability">AI behavior</a>
+      <a href="#eval">Evaluation</a>
+      <a href="#security">Security</a>
+    </nav>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle light and dark mode">
+      <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+  </header>
+
+  <main>
+    <!-- ===== Hero ===== -->
+    <section class="cs-hero">
+      <p class="eyebrow">Product Requirements Document &middot; AI Compliance Assistant</p>
+      <h1>SAGE</h1>
+      <p class="cs-lead">The end-to-end AI PRD behind SAGE: an enterprise compliance assistant that reads a company&rsquo;s policy documents and answers employee questions with grounded, cited answers, a risk level, and a confidence score, detects conflicts between policies, and blocks prompt-injection attacks before they reach the model. This is the requirement set the way I scoped, built, and evaluated it as the product manager.</p>
+
+      <dl class="cs-meta doc-info">
+        <div><dt>Product Manager</dt><dd>Dhanvardini Rajendran</dd></div>
+        <div><dt>Document</dt><dd>End-to-end AI PRD, v1.0</dd></div>
+        <div><dt>Status</dt><dd>Shipped &amp; evaluated</dd></div>
+        <div><dt>Stack</dt><dd>GPT-4o &middot; LangGraph &middot; ChromaDB</dd></div>
+        <div><dt>Deployed</dt><dd>Hugging Face Spaces</dd></div>
+        <div><dt>Team</dt><dd>A 3-person team</dd></div>
+      </dl>
+
+      <div class="cs-hero-actions">
+        <a class="btn btn-primary" href="#summary">Read the document</a>
+        <a class="btn" href="sage.html">Back to the case study</a>
+        <a class="btn" href="#security">Jump to security</a>
+      </div>
+
+      <div class="cs-chips">
+        <span>Grounded RAG QA</span><span>Citations on every answer</span><span>Policy-conflict detection</span>
+        <span>100% attack block</span><span>&ge;91% accuracy</span><span>5 build phases</span>
+      </div>
+    </section>
+
+    <div class="cs-cover">
+      <img src="../assets/projects/sage_compliance_card_hero.webp" alt="SAGE compliance assistant" />
+    </div>
+
+    <!-- ===== 1. Document information ===== -->
+    <section class="cs-section narrow" id="docinfo">
+      <div class="cs-reveal">
+        <p class="cs-label">01 &middot; Document information</p>
+        <h2>What this document covers.</h2>
+        <p>This PRD specifies SAGE as an AI product: the problem and evidence, the users and jobs to be done, the goals and success metrics, the functional requirements, the AI capability and system behavior, the data and retrieval contract, the model and prompt strategy, the evaluation framework, the safety and security posture, and the rollout plan. Numeric targets stated as thresholds are product targets, not claims beyond the measured results reported on the case study.</p>
+        <div class="cs-table-wrap">
+          <table class="cs-table">
+            <thead><tr><th>Field</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Product</td><td>SAGE, Secure AI Governance Engine</td></tr>
+              <tr><td>Type</td><td>Enterprise AI compliance assistant, 0 to 1</td></tr>
+              <tr><td>Owner</td><td>Dhanvardini Rajendran, Product Manager</td></tr>
+              <tr><td>Team</td><td>A 3-person team</td></tr>
+              <tr><td>Version</td><td>v1.0, shipped and evaluated</td></tr>
+              <tr><td>Core stack</td><td>GPT-4o, LangGraph ReAct agent, ChromaDB hybrid RAG</td></tr>
+              <tr><td>Deployment</td><td>Hugging Face Spaces</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 2. Executive summary ===== -->
+    <section class="cs-section" id="summary">
+      <div class="cs-reveal">
+        <p class="cs-label">02 &middot; Executive summary</p>
+        <h2>A trusted answer, not just an answer.</h2>
+        <p>Employees misread dense policy documents, lean on informal verbal guidance, and create real regulatory exposure. The two existing options are both bad: route every question to legal (slow and expensive), or use a generic chatbot that confidently hallucinates policy (dangerous). SAGE sits in between, grounded in the actual policy text, automated, auditable, and secure.</p>
+        <p>The product bet is that a <strong>hardened RAG agent with structured output</strong>, built on GPT-4o and orchestrated with LangGraph, can answer a question like &ldquo;I saved customer data to my personal laptop, is that a violation?&rdquo; with a citation-backed ruling a non-lawyer can act on, while refusing to be talked out of the rules. Every query passes a multi-layer prompt-security pipeline before it reaches the model, and every answer returns Answer, Citations, Risk Level, Reasoning, and Confidence.</p>
+        <div class="cs-stats">
+          <div class="cs-stat"><b>100%</b><span>Adversarial attacks blocked</span></div>
+          <div class="cs-stat"><b>&ge;91%</b><span>Risk-classification accuracy</span></div>
+          <div class="cs-stat"><b>5</b><span>Build phases, prompt to product</span></div>
+          <div class="cs-stat"><b>100%</b><span>Citation groundedness target</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 3. Background & context ===== -->
+    <section class="cs-section" id="background">
+      <div class="cs-reveal">
+        <p class="cs-label">03 &middot; Background &amp; context</p>
+        <h2>Why a grounded compliance agent, and why now.</h2>
+        <p>Compliance knowledge lives in long, formal policy documents that most employees never read end to end. The cost of getting an answer wrong is asymmetric: a single mishandled-data incident or a misread eligibility rule can create regulatory exposure that dwarfs the cost of the question. Generic LLM assistants make this worse, not better, because a confident hallucination of a policy detail is more dangerous than no answer at all.</p>
+        <p>SAGE was built as the full lifecycle of an LLM application across five phases: system-prompt design, retrieval and hardening, an agent architecture, production features, and adversarial security. Accuracy climbed at every phase, from a 52% zero-shot baseline to 91%+ on hard cases, and the security work proved the system against a structured attack suite. It is deployed on Hugging Face Spaces, where a reviewer can load one of five demo organizations or upload their own policies and ask.</p>
+        <div class="cs-callout">
+          <p class="cs-label">Context</p>
+          <p>SAGE is portable by design: drop in any company&rsquo;s PDF or text policies and a dynamic system prompt specializes reasoning per organization type. The requirement is that the product never depends on a single hard-coded corpus, so the same agent serves any policy set without code changes.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 4. Problem statement + evidence ===== -->
+    <section class="cs-section" id="problem">
+      <div class="cs-reveal">
+        <p class="cs-label">04 &middot; Problem statement &amp; evidence</p>
+        <h2>Policy is dense, and getting it wrong is expensive.</h2>
+        <p><strong>Problem:</strong> employees cannot reliably self-serve compliance answers from raw policy text, so they either escalate every question to a slow, expensive legal team or guess, and a generic chatbot that confidently hallucinates policy detail is not a safe substitute.</p>
+        <ul>
+          <li>Long policy documents are read selectively or not at all, so real rules are missed.</li>
+          <li>Informal, verbal guidance spreads incorrect interpretations that nobody can audit later.</li>
+          <li>A generic assistant invents plausible policy text, which is worse than abstaining because it reads as authoritative.</li>
+          <li>A single scenario often triggers several policies at once, and conflicts between them go unnoticed until an incident.</li>
+        </ul>
+        <p><strong>Who feels it most:</strong> the compliance reviewer drowning in repeat questions, the policy owner whose documents are misread, and the employee who just wants a safe, sourced answer they can act on without waiting on legal.</p>
+        <div class="cs-callout">
+          <p class="cs-label">Evidence from the build</p>
+          <p>A zero-shot generic model answered the evaluation set at only 52% accuracy, and adversarial cases (false-fact injections and jailbreaks) were a distinct, large slice of the evaluation corpus precisely because confident wrong answers are the core failure mode. SAGE&rsquo;s whole value is closing that gap with grounding, citations, and refusal.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 5. Target users & personas + JTBD ===== -->
+    <section class="cs-section" id="users">
+      <div class="cs-reveal">
+        <p class="cs-label">05 &middot; Target users, personas &amp; JTBD</p>
+        <h2>Three users, one trusted answer.</h2>
+        <div class="cs-cards">
+          <div class="cs-card">
+            <h3>The Compliance Reviewer</h3>
+            <p>Fields the same policy questions over and over and is the escalation point when an answer is unclear. Needs an auditable, citation-backed trail for every ruling.<span class="cs-tradeoff">JTBD: &ldquo;When an employee asks a policy question, help me resolve it correctly and defensibly without re-reading the whole manual.&rdquo;</span></p>
+          </div>
+          <div class="cs-card">
+            <h3>The Policy Owner</h3>
+            <p>Owns and maintains the policy documents and cares that they are interpreted as written, and that conflicts between policies surface early.<span class="cs-tradeoff">JTBD: &ldquo;When my policies are queried, make sure answers are grounded in the real text and tell me where two policies collide.&rdquo;</span></p>
+          </div>
+          <div class="cs-card">
+            <h3>The Employee</h3>
+            <p>Has a real situation and a yes-or-no question, and wants a safe answer in plain English without flagging themselves to legal for routine queries.<span class="cs-tradeoff">JTBD: &ldquo;When I&rsquo;m unsure if something is allowed, give me the actual rule, the risk level, and where it came from, so I can act.&rdquo;</span></p>
+          </div>
+        </div>
+        <h3>Representative user stories</h3>
+        <ul>
+          <li><strong>Employee, eligibility:</strong> &ldquo;I started 45 days ago, am I eligible for remote work?&rdquo; goes to the actual rule, the section it came from, a risk level, and a confidence score.</li>
+          <li><strong>Employee, data handling:</strong> &ldquo;I saved customer data to my personal laptop, is that a violation?&rdquo; goes to a grounded ruling with the triggered policies and a High/Medium/Low risk level.</li>
+          <li><strong>Policy owner, conflict:</strong> &ldquo;Do our remote-work and data-security policies contradict each other here?&rdquo; goes to a surfaced tension before the final answer is written.</li>
+          <li><strong>Reviewer, audit:</strong> &ldquo;Show me the trail for that answer&rdquo; goes to a logged query, retrieved sections, risk, and citations.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== 6. Goals, metrics & non-goals ===== -->
+    <section class="cs-section" id="goals">
+      <div class="cs-reveal">
+        <p class="cs-label">06 &middot; Goals, success metrics &amp; non-goals</p>
+        <h2>What success looks like.</h2>
+        <div class="cs-callout">
+          <p class="cs-label">North Star metric &middot; TRR</p>
+          <p><strong>Trusted Resolution Rate (TRR)</strong>, the share of compliance questions SAGE resolves with a correct, citation-grounded answer the employee can act on without escalating to legal. It only counts if the answer is right, sourced to real policy text, and safe.</p>
+        </div>
+        <h3>Goal tiers</h3>
+        <ul>
+          <li><strong>User goal:</strong> get a correct, sourced, plain-English ruling with a risk level fast, without escalating to legal.</li>
+          <li><strong>Business goal:</strong> deflect routine compliance questions from legal while reducing the rate of unsafe or unaudited guidance.</li>
+          <li><strong>Model goal:</strong> answer only from retrieved policy text, cite every claim, abstain when there is no evidence, and resist every prompt-injection attempt.</li>
+        </ul>
+        <h3>Success metrics</h3>
+        <div class="cs-table-wrap">
+          <table class="cs-table">
+            <thead><tr><th>Tier</th><th>Metric</th><th>Why it matters</th><th>Target / result</th></tr></thead>
+            <tbody>
+              <tr><td>Primary</td><td>Risk-classification accuracy</td><td>The risk level drives the employee&rsquo;s action</td><td class="ok">&ge;91%</td></tr>
+              <tr><td>Primary</td><td>Citation groundedness</td><td>Every cited section must be real policy text</td><td class="ok">100% target</td></tr>
+              <tr><td>Primary</td><td>LLM-as-judge quality</td><td>Accuracy, clarity, completeness of the answer</td><td class="ok">&ge;8.5 / 10</td></tr>
+              <tr><td>Primary</td><td>Self-serve resolution</td><td>Answered without legal escalation, the TRR driver</td><td>Instrument in production</td></tr>
+              <tr><td>Counter</td><td>Hallucinated citations</td><td>A fabricated section destroys trust</td><td>Drive to zero</td></tr>
+              <tr><td>Counter</td><td>Attack bypass rate</td><td>Any injection that slips through</td><td class="ok">0%</td></tr>
+              <tr><td>Counter</td><td>False-positive blocks</td><td>Refusing a legitimate question</td><td>Keep near zero</td></tr>
+              <tr><td>Counter</td><td>Vague fallback rate</td><td>&ldquo;Consult your policy&rdquo; non-answers</td><td>Minimize, prefer grounded abstain</td></tr>
+              <tr><td>Qualitative</td><td>Auditability</td><td>Every answer leaves a defensible trail</td><td>Full audit log</td></tr>
+              <tr><td>Qualitative</td><td>Portability</td><td>Works on any company&rsquo;s uploaded policies</td><td>5 org types supported</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h3>Guardrail metrics</h3>
+        <p>Quality numbers only matter if the guardrails hold, so SAGE carries a dedicated set of safety thresholds. These are the metrics that decide whether a confident wrong answer can ever reach an employee, and they are tracked as first-class product targets alongside accuracy.</p>
+        <div class="cs-stats">
+          <div class="cs-stat"><b>~0%</b><span>Hallucination / unsupported-claim rate, citations mandatory</span></div>
+          <div class="cs-stat"><b>100%</b><span>Prompt-injection block rate</span></div>
+          <div class="cs-stat"><b>~0%</b><span>Citation-failure rate, every cite resolves to real text</span></div>
+          <div class="cs-stat"><b>&ge;95%</b><span>Abstention correctness on no-evidence cases</span></div>
+        </div>
+        <div class="cs-table-wrap">
+          <table class="cs-table">
+            <thead><tr><th>Guardrail</th><th>What it protects</th><th>How it is measured</th><th>Target</th></tr></thead>
+            <tbody>
+              <tr><td>Hallucination / unsupported-claim rate</td><td>No claim is asserted without a citation to retrieved policy text</td><td>Flag any answer whose claims are not supported by a retrieved section; citations mandatory on every claim</td><td class="ok">Near zero</td></tr>
+              <tr><td>Abstention correctness</td><td>SAGE correctly says &ldquo;insufficient evidence&rdquo; when no policy supports an answer</td><td>No-evidence cases in the eval set expect an abstain; score the abstain rate on those cases</td><td class="ok">&ge;95%</td></tr>
+              <tr><td>Prompt-injection block rate</td><td>No adversarial input overrides the rules or exfiltrates the prompt</td><td>Structured attack suite plus live red-team rounds; share of attacks blocked</td><td class="ok">100%</td></tr>
+              <tr><td>Citation-failure rate</td><td>Every cited section resolves to a real, addressable unit of the corpus</td><td>Cross-check each citation against the corpus; flag any that does not resolve</td><td class="ok">Near zero</td></tr>
+              <tr><td>User correction / escalation rate</td><td>How often a human has to correct or escalate a SAGE ruling</td><td>Track corrections and legal escalations against live questions in production</td><td>Minimize, instrument in production</td></tr>
+              <tr><td>P95 latency</td><td>The assistant stays interactive under the security and retrieval layers</td><td>95th-percentile end-to-end response time per query</td><td>&le;6s P95</td></tr>
+              <tr><td>Cost per query</td><td>Grounding stays affordable at scale</td><td>Model and retrieval spend per answered query; hybrid RAG cut prompt tokens ~80%</td><td>Track per query, budget per org</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="cs-callout">
+          <p class="cs-label">Guardrail rule</p>
+          <p>A citation is mandatory on every claim, and the system abstains rather than guess. The hallucination, citation-failure, and injection-block guardrails are release gates: a build that regresses any of them does not ship, regardless of how high its accuracy score climbs.</p>
+        </div>
+
+        <h3>Non-goals (v1)</h3>
+        <ul>
+          <li>SAGE does not give legal advice or replace a lawyer; it surfaces grounded policy and a risk level for a human to act on.</li>
+          <li>It does not edit, draft, or version the company&rsquo;s policy documents.</li>
+          <li>It does not invent policy where none exists, and it does not answer out-of-scope (non-policy) questions.</li>
+          <li>It does not make a binding decision; the human stays in control of the action.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== 7. User journey & use cases ===== -->
+    <section class="cs-section" id="journey">
+      <div class="cs-reveal">
+        <p class="cs-label">07 &middot; User journey &amp; use cases</p>
+        <h2>From a worried question to a grounded ruling.</h2>
+        <p>An employee opens SAGE for the active organization (or uploads a policy set), types a plain-English question, and gets back a structured ruling. The same product serves the reviewer (who reads the citations and the audit trail) and the policy owner (who watches for surfaced conflicts).</p>
+        <div class="agent-grid">
+          <div class="agent-card"><span class="agent-no">01</span><h3>Ask</h3><span class="agent-model">Plain English</span><p>The employee asks a normal scenario question. No knowledge of policy section numbers required.</p></div>
+          <div class="agent-card"><span class="agent-no">02</span><h3>Screen</h3><span class="agent-model">Security gauntlet</span><p>The query is sanitized, injection-checked, and scope-gated before any model call.</p></div>
+          <div class="agent-card"><span class="agent-no">03</span><h3>Ground</h3><span class="agent-model">Hybrid retrieval</span><p>Relevant policy sections are retrieved and cross-referenced; conflicts are detected.</p></div>
+          <div class="agent-card"><span class="agent-no">04</span><h3>Rule</h3><span class="agent-model">Structured output</span><p>The agent returns Answer, Citations, Risk Level, Reasoning, and Confidence, logged for audit.</p></div>
+        </div>
+        <h3>Primary use cases</h3>
+        <ul>
+          <li><strong>Single-policy lookup:</strong> a straightforward eligibility or handling question answered from one section.</li>
+          <li><strong>Multi-policy scenario:</strong> a situation that triggers several policies, cross-referenced into one ruling.</li>
+          <li><strong>Conflict surfacing:</strong> two policies impose competing requirements; SAGE flags the tension before answering.</li>
+          <li><strong>Follow-up conversation:</strong> memory lets the employee refine the scenario without restating it.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== 8. Scope ===== -->
+    <section class="cs-section" id="scope">
+      <div class="cs-reveal">
+        <p class="cs-label">08 &middot; Scope, MVP &amp; later</p>
+        <h2>What ships now, what comes later.</h2>
+        <div class="prd">
+          <div class="prd-head"><span class="prd-dot"></span><b>SAGE: Scope &amp; MoSCoW</b><span class="prd-file">SCOPE.md</span></div>
+          <div class="prd-panels">
+            <div class="prd-panel is-active">
+              <h4>Scope by priority</h4>
+              <div class="prd-moscow">
+                <div class="col"><h5>Must (MVP)</h5><ul><li>Grounded QA over uploaded policy</li><li>Citations on every answer</li><li>Risk level + confidence</li><li>Prompt-injection screening</li><li>Abstain when no evidence</li></ul></div>
+                <div class="col"><h5>Should</h5><ul><li>Hybrid retrieval, re-ranked</li><li>Policy-conflict detection</li><li>LangGraph ReAct agent + tools</li><li>Conversation memory</li><li>Audit logging</li></ul></div>
+                <div class="col"><h5>Could</h5><ul><li>Dynamic per-org system prompt</li><li>5 demo organization types</li><li>LLM-as-judge scoring</li><li>Confidence calibration</li></ul></div>
+                <div class="col"><h5>Won&rsquo;t (v1)</h5><ul><li>Legal advice / binding decisions</li><li>Editing the policy corpus</li><li>SSO / per-user accounts</li><li>Multi-language answers</li></ul></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="cs-callout">
+          <p class="cs-label">PM note</p>
+          <p>The cut line was deliberate: grounding, citations, and refusal had to ship and evaluate cleanly before any of the &ldquo;could&rdquo; features. A compliance assistant that is occasionally wrong but always confident is a liability, so abstention and citation correctness were treated as MVP, not polish.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 9. Functional requirements ===== -->
+    <section class="cs-section" id="requirements">
+      <div class="cs-reveal">
+        <p class="cs-label">09 &middot; Functional requirements</p>
+        <h2>The numbered requirement set.</h2>
+        <div class="cs-table-wrap">
+          <table class="cs-table">
+            <thead><tr><th>ID</th><th>Requirement</th><th>Detail</th></tr></thead>
+            <tbody>
+              <tr><td>FR-01</td><td>Plain-English query</td><td>Accept a free-text scenario question; no policy section numbers required from the user.</td></tr>
+              <tr><td>FR-02</td><td>Grounded answer</td><td>Answer only from retrieved policy text; never use outside knowledge to assert a rule.</td></tr>
+              <tr><td>FR-03</td><td>Citations</td><td>Return the specific policy section(s) behind every claim; each citation must be verifiable against the corpus.</td></tr>
+              <tr><td>FR-04</td><td>Risk level</td><td>Classify each scenario as High, Medium, or Low with a weighted severity score.</td></tr>
+              <tr><td>FR-05</td><td>Confidence score</td><td>Return a confidence value so a low-certainty answer is labelled, not hidden.</td></tr>
+              <tr><td>FR-06</td><td>Reasoning</td><td>Show the reasoning and any policy tension, rather than emitting a bare verdict.</td></tr>
+              <tr><td>FR-07</td><td>Conflict detection</td><td>Surface conflicting policy requirements before the final answer is written.</td></tr>
+              <tr><td>FR-08</td><td>Cross-reference</td><td>Identify all policies a single scenario triggers, so nothing is answered in isolation.</td></tr>
+              <tr><td>FR-09</td><td>Abstain on no evidence</td><td>If retrieval returns no supporting policy, refuse to invent one and say so.</td></tr>
+              <tr><td>FR-10</td><td>Injection screening</td><td>Pass every query through the prompt-security pipeline before any model call.</td></tr>
+              <tr><td>FR-11</td><td>Scope gate</td><td>Reject non-policy / out-of-domain questions cleanly.</td></tr>
+              <tr><td>FR-12</td><td>Conversation memory</td><td>Remember the conversation so follow-up questions work without restating context.</td></tr>
+              <tr><td>FR-13</td><td>Audit log</td><td>Record query, retrieved sections, risk, and citations for every answer.</td></tr>
+              <tr><td>FR-14</td><td>Portable corpus</td><td>Accept any company&rsquo;s PDF or text policies and adapt the system prompt to the org type.</td></tr>
+              <tr><td>FR-15</td><td>Structured output</td><td>Always return Answer, Citations, Risk Level, Reasoning, and Confidence in a structured shape.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 10. AI capability & system behavior ===== -->
+    <section class="cs-section" id="capability">
+      <div class="cs-reveal">
+        <p class="cs-label">10 &middot; AI capability &amp; system behavior</p>
+        <h2>What the system does, and what it must never do.</h2>
+        <p>A LangGraph ReAct agent on GPT-4o reasons over a ChromaDB hybrid-RAG index of section-chunked policy text. It calls tools to retrieve, cross-reference, detect conflicts, and assess risk, then returns structured output. Free-form generation never happens; only grounded, in-scope queries reach the model.</p>
+        <div class="agent-grid">
+          <div class="agent-card"><span class="agent-no">01</span><h3>search_policy</h3><span class="agent-model">Hybrid RAG</span><p>Retrieves the top re-ranked policy chunks for the scenario from ChromaDB.</p></div>
+          <div class="agent-card"><span class="agent-no">02</span><h3>check_cross_references</h3><span class="agent-model">Coverage</span><p>Identifies which policies a single scenario triggers, so nothing is answered in isolation.</p></div>
+          <div class="agent-card"><span class="agent-no">03</span><h3>detect_policy_conflicts</h3><span class="agent-model">Tension</span><p>Surfaces conflicting requirements (CF-001 to CF-005) before the final answer is written.</p></div>
+          <div class="agent-card"><span class="agent-no">04</span><h3>assess_risk</h3><span class="agent-model">Classify</span><p>Returns a High / Medium / Low risk level with a weighted severity score.</p></div>
+        </div>
+        <h3>Inputs and outputs</h3>
+        <div class="cs-table-wrap">
+          <table class="cs-table">
+            <thead><tr><th>Direction</th><th>Contract</th></tr></thead>
+            <tbody>
+              <tr><td>Input</td><td>A plain-English scenario question, plus conversation history and the active policy corpus.</td></tr>
+              <tr><td>Output</td><td>Answer, Citations (real policy sections), Risk Level (High/Medium/Low), Reasoning (with any tension), Confidence (score).</td></tr>
+              <tr><td>Refusal</td><td>A grounded abstain when no policy supports an answer, or a clean rejection for out-of-scope or adversarial input.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="cs-callout">
+          <p class="cs-label">What it must never do</p>
+          <p>Never invent a policy or a section number. Never assert a rule from outside the retrieved text. Never be talked out of the rules by an instruction in the query. Never answer an out-of-scope question as if it were policy. Never emit an answer without citations and a risk level when policy support exists.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 11. Data & retrieval requirements ===== -->
+    <section class="cs-section" id="data">
+      <div class="cs-reveal">
+        <p class="cs-label">11 &middot; Data &amp; retrieval requirements</p>
+        <h2>The grounding contract.</h2>
+        <p>SAGE&rsquo;s answers are only as trustworthy as its retrieval. The policy corpus is section-chunked so that every citation maps to a real, addressable unit of policy text, and retrieval is hybrid (semantic plus keyword) and re-ranked so that both conceptual and exact-term matches surface.</p>
+        <div class="cs-table-wrap">
+          <table class="cs-table">
+            <thead><tr><th>Requirement</th><th>Specification</th></tr></thead>
+            <tbody>
+              <tr><td>Corpus</td><td>Any company&rsquo;s PDF or text policies; 5 demo organization types supported out of the box.</td></tr>
+              <tr><td>Chunking</td><td>Section-level chunks so citations are addressable at policy-section granularity.</td></tr>
+              <tr><td>Retrieval</td><td>Hybrid: semantic plus keyword, re-ranked (0.6 semantic / 0.4 keyword), with query expansion across compliance synonyms.</td></tr>
+              <tr><td>Citation granularity</td><td>Cite to the specific section, not the whole document; every cited section must exist in the corpus.</td></tr>
+              <tr><td>Recall@k</td><td>The triggered policies for a scenario should appear in the top-k retrieved chunks; measured against the evaluation set&rsquo;s expected sections.</td></tr>
+              <tr><td>Precision@k</td><td>Retrieved chunks should be on-topic for the scenario, so the agent reasons over signal, not noise.</td></tr>
+              <tr><td>Permissions</td><td>Retrieval is scoped to the active organization&rsquo;s corpus; no cross-org leakage of policy text.</td></tr>
+              <tr><td>Efficiency</td><td>Retrieve and inject only relevant chunks; the hybrid pipeline cut prompt tokens by roughly 80% versus injecting the full corpus.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 12. Model & prompt strategy ===== -->
+    <section class="cs-section" id="prompts">
+      <div class="cs-reveal">
+        <p class="cs-label">12 &middot; Model &amp; prompt strategy</p>
+        <h2>GPT-4o, orchestrated and pinned.</h2>
+        <p>The reasoning model is GPT-4o, chosen for structured-output reliability and instruction-following under adversarial pressure. LangGraph orchestrates a ReAct agent so the model reasons with tools rather than free-generating, and a dynamic system prompt specializes reasoning per organization type while pinning identity and the rules in every call.</p>
+        <h3>Prompt strategy</h3>
+        <ul>
+          <li><strong>Technique selection:</strong> 13 prompting techniques were compared head to head (zero-shot, chain-of-thought, ensembling, self-consistency, self-criticism, meta-prompting, and more); the winners were synthesized into the production prompt.</li>
+          <li><strong>Output contract:</strong> the prompt forces structured output, Answer / Citations / Risk / Reasoning / Confidence, so a generative model becomes a sourced one.</li>
+          <li><strong>Identity lock:</strong> the system prompt is re-asserted in every call with authority-claim resistance and org-mismatch detection baked in, so an injected instruction cannot override the role.</li>
+          <li><strong>Grounding instruction:</strong> answer using only the retrieved excerpts; abstain rather than reach outside them.</li>
+        </ul>
+        <div class="cs-callout">
+          <p class="cs-label">Prompt versioning</p>
+          <p>Prompts are treated as product surface area, not throwaway strings. Each phase produced a tracked prompt version, scored against the evaluation set so a change that helped one case but hurt overall accuracy was caught. The defense pattern set was versioned the same way, expanding from 10 to 52 patterns across phases.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 13. UX requirements ===== -->
+    <section class="cs-section" id="ux">
+      <div class="cs-reveal">
+        <p class="cs-label">13 &middot; UX requirements</p>
+        <h2>Show the receipts.</h2>
+        <ul>
+          <li><strong>Plain-English entry:</strong> a single question box; the user never needs to know section numbers or policy structure.</li>
+          <li><strong>Structured answer card:</strong> the answer, the cited sections, a High/Medium/Low risk badge, the reasoning, and a confidence score are all visible at once.</li>
+          <li><strong>Verifiable citations:</strong> every cited section is shown so the user can check the source, not just read the verdict.</li>
+          <li><strong>Surfaced tension:</strong> when policies conflict, the tension is shown rather than silently resolved.</li>
+          <li><strong>Honest uncertainty:</strong> a low-confidence answer is labelled as such; an unsupported question returns a clear abstain.</li>
+          <li><strong>Conversational:</strong> follow-up questions work without re-stating the scenario.</li>
+          <li><strong>Portable setup:</strong> load one of five demo organizations or upload a policy set and ask.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== 14. Evaluation framework ===== -->
+    <section class="cs-section" id="eval">
+      <div class="cs-reveal">
+        <p class="cs-label">14 &middot; Evaluation framework</p>
+        <h2>Measured at every step, not assumed.</h2>
+        <p>Accuracy was measured against a structured evaluation set, not asserted. Each case carries an expected risk level, the policies it should trigger, and the relevant sections, so an answer is graded on whether it is right, grounded, and cited, with an independent LLM-as-judge scoring quality. Accuracy climbed at every phase: 52% zero-shot, 85% after the Phase 1 prompt, 87% with RAG in Phase 2, and 91%+ on hard cases with the Phase 3 agent.</p>
+        <div class="cs-stats">
+          <div class="cs-stat"><b>&ge;91%</b><span>Risk-classification accuracy</span></div>
+          <div class="cs-stat"><b>100%</b><span>Citation groundedness</span></div>
+          <div class="cs-stat"><b>&ge;8.5/10</b><span>LLM-as-judge quality</span></div>
+          <div class="cs-stat"><b>82/100</b><span>Average confidence score</span></div>
+        </div>
+        <h3>Evaluation rubric</h3>
+        <div class="cs-table-wrap">
+          <table class="cs-table">
+            <thead><tr><th>Dimension</th><th>What it measures</th><th>Method</th><th>Target / result</th></tr></thead>
+            <tbody>
+              <tr><td>Groundedness</td><td>Answer follows only from retrieved policy text</td><td>Check claims against retrieved sections</td><td class="ok">100% target</td></tr>
+              <tr><td>Citation correctness</td><td>Every cited section is real and relevant</td><td>Cross-check each citation against the corpus</td><td class="ok">100% groundedness</td></tr>
+              <tr><td>Risk accuracy</td><td>Risk level matches the expected label</td><td>Compare to the case&rsquo;s expected risk</td><td class="ok">&ge;91%</td></tr>
+              <tr><td>Hallucination rate</td><td>Fabricated sections or rules</td><td>Flag any cited section not in the corpus</td><td>Drive to zero</td></tr>
+              <tr><td>Answer quality</td><td>Accuracy, clarity, completeness</td><td>LLM-as-judge score per answer</td><td class="ok">&ge;8.5 / 10</td></tr>
+              <tr><td>Abstention correctness</td><td>Refuses when no policy supports an answer</td><td>No-evidence cases expect an abstain</td><td>Required behavior</td></tr>
+              <tr><td>Calibration</td><td>Confidence tracks correctness</td><td>Confidence score vs. judged accuracy</td><td>~82 / 100 average</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="scorecard">
+          <div class="score-item"><b>52%</b><span>Zero-shot baseline</span></div>
+          <div class="score-item"><b>85%</b><span>Phase 1 prompt</span></div>
+          <div class="score-item"><b>87%</b><span>Phase 2 + RAG</span></div>
+          <div class="score-item"><b>91%+</b><span>Phase 3 agent</span></div>
+        </div>
+
+        <h3>How the framework is built</h3>
+        <div class="cs-table-wrap">
+          <table class="cs-table">
+            <thead><tr><th>Layer</th><th>What it does</th></tr></thead>
+            <tbody>
+              <tr><td>Golden eval dataset</td><td>A curated set of scenario cases, each labelled with the expected risk level, the policies it should trigger, and the relevant sections, including a large slice of no-evidence and adversarial cases.</td></tr>
+              <tr><td>Human rubric</td><td>A scored rubric (groundedness, citation correctness, risk accuracy, hallucination, answer quality, abstention, calibration) applied by a human reviewer, shown as the table above.</td></tr>
+              <tr><td>Automated evaluators</td><td>Deterministic checks for risk-label match, citation-resolves-to-corpus, and groundedness that run on every build without a human in the loop.</td></tr>
+              <tr><td>LLM-as-a-judge</td><td>An independent model scores answer quality (accuracy, clarity, completeness) at &ge;8.5 / 10, used as a fast proxy on top of the deterministic checks, never as the sole gate.</td></tr>
+              <tr><td>Baseline + thresholds</td><td>The 52% zero-shot baseline anchors progress; each metric has a release threshold (for example &ge;91% risk accuracy, 100% injection block, near-zero hallucination).</td></tr>
+              <tr><td>Regression testing</td><td>Every prompt or defense version is re-scored against the full golden set so a change that helps one case but hurts overall accuracy is caught before it ships.</td></tr>
+              <tr><td>Adversarial / red-team testing</td><td>The structured attack suite plus live red-team rounds across 9 attack families run as a standing part of evaluation, not a one-off.</td></tr>
+              <tr><td>Segment-level eval</td><td>Accuracy is read per organization type and per case type (single-policy, multi-policy, conflict, no-evidence, adversarial) so a strong average never hides a weak segment.</td></tr>
+              <tr><td>Production sampling</td><td>A sample of live answers is reviewed against the same rubric, and low-confidence answers are routed into the golden set as new cases.</td></tr>
+              <tr><td>Cadence + ownership</td><td>The PM (Dhanvardini) owns the eval set and thresholds; the suite runs on every prompt or defense change and on a fixed cadence, with red-team rounds repeated as new injection techniques emerge.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="cs-callout">
+          <p class="cs-label">LLM-as-a-judge, and its limits</p>
+          <p>The LLM judge is a useful, cheap proxy for answer quality, but it is not ground truth. It can be biased toward longer or more confident-sounding answers, it can miss a subtle factual or citation error, it is not fully reproducible run to run, and it can in principle be swayed by content in the answer it is scoring. So the judge never decides correctness alone: risk-label match, citation-resolves-to-corpus, and groundedness are scored by deterministic evaluators and human review, and the judge sits on top as a quality signal, calibrated against human labels and never used as the release gate by itself.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 15. Safety, privacy & security ===== -->
+    <section class="cs-section" id="safety">
+      <div class="cs-reveal">
+        <p class="cs-label">15 &middot; Safety, privacy &amp; security</p>
+        <h2>Auditable, scoped, and honest.</h2>
+        <ul>
+          <li><strong>Grounding as safety:</strong> the primary safety control is that SAGE answers only from retrieved policy text and abstains otherwise, so a confident hallucination cannot become an authoritative-looking ruling.</li>
+          <li><strong>Auditability:</strong> every answer logs the query, retrieved sections, risk, and citations, so any ruling can be defended or reviewed after the fact.</li>
+          <li><strong>Scoped data:</strong> retrieval is limited to the active organization&rsquo;s corpus; one company&rsquo;s policy text never leaks into another&rsquo;s answers.</li>
+          <li><strong>Human in control:</strong> SAGE surfaces grounded policy and a risk level; the human makes the decision. It does not give binding legal advice.</li>
+          <li><strong>Honest uncertainty:</strong> low-confidence answers are labelled and conflicts are shown, rather than papered over.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== 16. Prompt-injection & adversarial security ===== -->
+    <section class="cs-section" id="security">
+      <div class="cs-reveal">
+        <p class="cs-label">16 &middot; Prompt-injection &amp; adversarial security</p>
+        <h2>Built to be attacked, then proven against it.</h2>
+        <p>Because the whole product is trust, SAGE was hardened against every known prompt-injection technique: direct injection (persona overrides, instruction smuggling), indirect injection (false attribution, hypothetical framing), prompt exfiltration, and social-engineering authority pretexts. The defense expanded from 10 to <strong>52 patterns across 9 attack families</strong>, plus authority-claim resistance and org-mismatch detection baked into the prompts. Against the structured attack suite, the result was a 100% block rate with no legitimate query rejected.</p>
+        <div class="scorecard">
+          <div class="score-item"><b>100%</b><span>Attacks blocked (37 / 37)</span></div>
+          <div class="score-item"><b>100%</b><span>Legit queries passed (25 / 25)</span></div>
+          <div class="score-item"><b>0</b><span>False negatives</span></div>
+          <div class="score-item"><b>9 / 9</b><span>Live adversarial rounds passed</span></div>
+          <div class="score-item"><b>8</b><span>Defense layers (L0 to L7)</span></div>
+          <div class="score-item"><b>9</b><span>Attack families covered</span></div>
+        </div>
+        <h3>The 5-phase hardening path</h3>
+        <div class="agent-grid">
+          <div class="agent-card"><span class="agent-no">P1</span><h3>System prompt design</h3><span class="agent-model">52% to 85%</span><p>13 prompting techniques compared; the best synthesized into a structured-output prompt.</p></div>
+          <div class="agent-card"><span class="agent-no">P2</span><h3>Hardening + RAG</h3><span class="agent-model">87%</span><p>Sensitivity analysis, a structured eval set, and a ChromaDB hybrid-retrieval pipeline.</p></div>
+          <div class="agent-card"><span class="agent-no">P3</span><h3>Agent architecture</h3><span class="agent-model">91%+</span><p>A LangGraph ReAct agent with tools replaces the static prompt; LLM-as-judge scoring.</p></div>
+          <div class="agent-card"><span class="agent-no">P4</span><h3>Production</h3><span class="agent-model">5 org types</span><p>Conversation memory, conflict detection, confidence scoring, and audit logging.</p></div>
+          <div class="agent-card"><span class="agent-no">P5</span><h3>Prompt security</h3><span class="agent-model">100% blocked</span><p>A 52-pattern, 8-layer defense across 9 attack families; every attack blocked.</p></div>
+        </div>
+        <div class="cs-callout">
+          <p class="cs-label">The one false positive, found and fixed</p>
+          <p>An injection flag once mis-fired on the legitimate question &ldquo;what are your system rules for remote employees?&rdquo; It was fixed with a word-boundary lookahead, so legitimate questions about policy rules pass while exfiltration attempts do not.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 17. Analytics & experimentation ===== -->
+    <section class="cs-section" id="analytics">
+      <div class="cs-reveal">
+        <p class="cs-label">17 &middot; Analytics &amp; experimentation</p>
+        <h2>Instrument the bet.</h2>
+        <ul>
+          <li><strong>TRR instrumentation:</strong> track self-serve resolution and legal-escalation rate against live employee questions to measure the North Star in production.</li>
+          <li><strong>Counter-metrics:</strong> monitor hallucinated-citation rate, attack-bypass rate, false-positive blocks, and vague-fallback rate so quality gains are not bought with safety.</li>
+          <li><strong>Prompt experiments:</strong> the head-to-head technique comparison is the experimentation harness; new prompt or defense versions are scored against the evaluation set before they ship.</li>
+          <li><strong>Feedback to fine-tune:</strong> a planned loop turns low-confidence answers into new evaluation cases, so the eval set grows with the hard questions the system gets wrong.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== 18. Non-functional ===== -->
+    <section class="cs-section" id="nonfunctional">
+      <div class="cs-reveal">
+        <p class="cs-label">18 &middot; Non-functional requirements</p>
+        <h2>Latency, cost, availability.</h2>
+        <div class="cs-table-wrap">
+          <table class="cs-table">
+            <thead><tr><th>Attribute</th><th>Requirement</th></tr></thead>
+            <tbody>
+              <tr><td>Latency</td><td>Interactive response for a single question; the security and retrieval layers run before the model so screening adds minimal overhead.</td></tr>
+              <tr><td>Cost</td><td>Hybrid retrieval injects only relevant chunks, cutting prompt tokens by roughly 80% versus full-corpus injection, which keeps per-query model cost down.</td></tr>
+              <tr><td>Availability</td><td>Deployed on Hugging Face Spaces; available for any reviewer to load a demo org or upload policies and ask.</td></tr>
+              <tr><td>Portability</td><td>No hard-coded corpus; the same agent serves any policy set and 5 org types without code changes.</td></tr>
+              <tr><td>Reliability</td><td>Structured output and a covered test suite keep responses well-formed; free-form generation never occurs.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 19. Edge cases & fallbacks ===== -->
+    <section class="cs-section" id="edgecases">
+      <div class="cs-reveal">
+        <p class="cs-label">19 &middot; Edge cases &amp; fallbacks</p>
+        <h2>What happens when it&rsquo;s not clean.</h2>
+        <div class="cs-table-wrap">
+          <table class="cs-table">
+            <thead><tr><th>Edge case</th><th>Behavior</th></tr></thead>
+            <tbody>
+              <tr><td>No supporting policy found</td><td>Abstain. SAGE says it cannot find a grounding section rather than inventing one.</td></tr>
+              <tr><td>Conflicting policies</td><td>Surface the tension explicitly, cite both sections, and flag the conflict before answering.</td></tr>
+              <tr><td>Out-of-scope question</td><td>The scope gate rejects non-policy topics cleanly.</td></tr>
+              <tr><td>Adversarial / injection input</td><td>Blocked by the prompt-security pipeline before any model call.</td></tr>
+              <tr><td>Ambiguous scenario</td><td>Return a lower confidence score and the reasoning, so the user sees the uncertainty.</td></tr>
+              <tr><td>Empty or no-context retrieval</td><td>A no-context fallback guard prevents the model from answering ungrounded.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 20. Dependencies, risks & assumptions ===== -->
+    <section class="cs-section" id="risks">
+      <div class="cs-reveal">
+        <p class="cs-label">20 &middot; Dependencies, risks &amp; assumptions</p>
+        <h2>What this depends on, and what could go wrong.</h2>
+        <h3>Dependencies</h3>
+        <ul>
+          <li>GPT-4o for reasoning and structured output.</li>
+          <li>LangGraph for agent orchestration; ChromaDB for hybrid retrieval.</li>
+          <li>Hugging Face Spaces for deployment.</li>
+          <li>A well-formed policy corpus (PDF or text) per organization.</li>
+        </ul>
+        <h3>Risks &amp; mitigations</h3>
+        <div class="cs-table-wrap">
+          <table class="cs-table">
+            <thead><tr><th>Risk</th><th>Mitigation</th></tr></thead>
+            <tbody>
+              <tr><td>Hallucinated policy / citations</td><td>Answer only from retrieved text; verify every cited section against the corpus; abstain on no evidence.</td></tr>
+              <tr><td>Prompt-injection bypass</td><td>An 8-layer, 52-pattern defense across 9 attack families, with identity lock and authority-claim resistance.</td></tr>
+              <tr><td>Over-blocking legitimate queries</td><td>Track false-positive blocks; the word-boundary fix is the pattern for tightening rules without rejecting valid questions.</td></tr>
+              <tr><td>Missed policy conflicts</td><td>A dedicated conflict-detection tool runs before the final answer; cross-reference covers multi-policy scenarios.</td></tr>
+              <tr><td>Poor retrieval on a new corpus</td><td>Hybrid retrieval plus query expansion; recall@k and precision@k measured against expected sections before launch.</td></tr>
+              <tr><td>Over-reliance on the answer</td><td>Human stays in control; confidence and reasoning shown; no binding decisions.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h3>Assumptions</h3>
+        <ul>
+          <li>The organization&rsquo;s policy documents are reasonably complete and authoritative.</li>
+          <li>Users ask in plain English about real scenarios, not for legal advice.</li>
+          <li>A human reviews high-risk rulings before acting.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== 21. Rollout & monitoring ===== -->
+    <section class="cs-section" id="rollout">
+      <div class="cs-reveal">
+        <p class="cs-label">21 &middot; Rollout &amp; monitoring</p>
+        <h2>Ship, watch, and harden.</h2>
+        <h3>Shipped (v1)</h3>
+        <p>SAGE shipped as a working product on Hugging Face Spaces: a hardened RAG agent with structured output, prompt-security screening, conflict detection, confidence scoring, and audit logging, evaluated against a structured set and a security suite. Load one of five demo organizations or upload your own policies, and ask.</p>
+        <h3>Monitoring &amp; observability</h3>
+        <ul>
+          <li>Instrument TRR: self-serve resolution and legal-escalation rate on live questions.</li>
+          <li>Watch the guardrail and counter-metrics: hallucinated citations, attack-bypass rate, false-positive blocks, vague fallbacks, P95 latency, and cost per query.</li>
+          <li>Run a red-team program on every new policy corpus before it goes live.</li>
+        </ul>
+        <p>Every response is traceable: the audit log records not just the answer and citations but the exact configuration that produced it, so any ruling can be reproduced and any regression can be traced to the change that caused it.</p>
+        <div class="cs-table-wrap">
+          <table class="cs-table">
+            <thead><tr><th>Traced per response</th><th>Why it is logged</th></tr></thead>
+            <tbody>
+              <tr><td>Model version</td><td>Pin which GPT-4o version produced the answer, so a model change can be tied to a behavior change.</td></tr>
+              <tr><td>Prompt version</td><td>Record the exact system-prompt and defense-pattern version in force, so a ruling maps back to a tracked artifact.</td></tr>
+              <tr><td>Retrieval config</td><td>Log the hybrid weights (0.6 / 0.4), top-k, and the active org corpus, so the grounding behind an answer can be reproduced.</td></tr>
+              <tr><td>Query + retrieved sections</td><td>Store the input and the exact sections retrieved, so the citation trail is auditable after the fact.</td></tr>
+              <tr><td>Risk, confidence + outcome</td><td>Capture the verdict, confidence score, and any later correction or escalation, so calibration can be measured against reality.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h3>Model &amp; prompt change management</h3>
+        <p>Prompts and defense patterns are versioned production artifacts, not throwaway strings. The system prompt grew across five tracked phases and the defense set expanded from 10 to 52 patterns, each version scored against the golden eval set before it shipped. A model or prompt change follows the same path every time: propose, re-score against the full eval and attack suites, check it against the guardrail release gates, then promote with the new version pinned into the per-response trace.</p>
+        <h3>What I would do next</h3>
+        <ul>
+          <li>Add a feedback-to-fine-tune loop so low-confidence answers become new evaluation cases.</li>
+          <li>Expand the org-type library and the defense pattern set as new attack families appear.</li>
+          <li>Calibrate confidence against measured accuracy in production.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== Decision log ===== -->
+    <section class="cs-section" id="decisions">
+      <div class="cs-reveal">
+        <p class="cs-label">Decision log</p>
+        <h2>What I chose, and why.</h2>
+        <div class="cs-table-wrap">
+          <table class="cs-table">
+            <thead><tr><th>Decision</th><th>Rationale</th><th>Tradeoff</th></tr></thead>
+            <tbody>
+              <tr><td>Agent + tools over a static prompt</td><td>Tool-grounded reasoning lifted hard-case accuracy to 91%+</td><td>More orchestration complexity than a single call</td></tr>
+              <tr><td>Hybrid retrieval, re-ranked</td><td>Catches both semantic and exact-term matches; cuts tokens ~80%</td><td>A tuning surface (0.6 / 0.4) to maintain</td></tr>
+              <tr><td>Abstain over guess</td><td>A grounded abstain is safer than a confident hallucination</td><td>Some questions go unanswered rather than risked</td></tr>
+              <tr><td>Structured output contract</td><td>Turns a generative model into a sourced, auditable one</td><td>Less free-form flexibility in the response</td></tr>
+              <tr><td>Security as a gauntlet before the model</td><td>Cheap checks run first; only clean queries reach GPT-4o</td><td>A pattern set to version and re-red-team over time</td></tr>
+              <tr><td>Portable corpus, dynamic prompt</td><td>One agent serves any company&rsquo;s policies and 5 org types</td><td>Retrieval quality depends on the uploaded corpus</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Pager ===== -->
+    <nav class="cs-pager">
+      <a href="sage.html"><span>Back to case study</span><b>&larr; SAGE</b></a>
+      <a href="../projects.html"><span>Next</span><b>All projects &rarr;</b></a>
+    </nav>
+  </main>
+
+  <!-- ===== Footer ===== -->
+    <footer class="site-footer" id="contact">
+    <div class="footer-row">
+      <span class="footer-name">Dhanvardini Rajendran</span>
+      <nav class="footer-links" aria-label="Contact">
+        <a href="mailto:dhanvardini.rajendran@gmail.com">Email</a>
+        <a href="https://www.linkedin.com/in/dhanvardini/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/DhanvardiniRajendran25" target="_blank" rel="noopener">GitHub</a>
+        <a href="../assets/resume.pdf" download>Resume</a>
+      </nav>
+    </div>
+    <p class="footer-fine">&copy; <span id="year"></span> Dhanvardini Rajendran &middot; Built from scratch.</p>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+  <script src="../js/project-page.js"></script>
+</body>
+</html>
