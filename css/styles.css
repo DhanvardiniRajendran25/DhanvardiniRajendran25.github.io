@@ -653,3 +653,6 @@ a:focus-visible, button:focus-visible, .btn:focus-visible, [tabindex]:focus-visi
   .proj-card:hover .proj-thumb img { transform: none; }
   .proj-card .proj-thumb::after { transition: opacity 0.2s linear; }
 }
+
+/* Bolded keywords in experience bullets pop against muted text */
+.exp-main li strong { color: var(--ink); font-weight: 700; }
