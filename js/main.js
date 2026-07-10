@@ -23,6 +23,33 @@
     });
   }
 
+  /* ---------- Mobile nav toggle (hamburger) ---------- */
+  (function mobileNav() {
+    var header = document.querySelector('.site-header');
+    var nav = header && header.querySelector('.site-nav');
+    if (!header || !nav) return;
+    var btn = document.createElement('button');
+    btn.className = 'nav-toggle';
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Toggle navigation menu');
+    btn.setAttribute('aria-expanded', 'false');
+    btn.innerHTML =
+      '<svg class="icon-menu" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>' +
+      '<svg class="icon-close" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+    var themeBtn = document.getElementById('themeToggle');
+    if (themeBtn && themeBtn.parentNode === header) header.insertBefore(btn, themeBtn);
+    else header.appendChild(btn);
+
+    function setOpen(open) {
+      header.classList.toggle('nav-open', open);
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+    btn.addEventListener('click', function () { setOpen(!header.classList.contains('nav-open')); });
+    nav.addEventListener('click', function (e) { if (e.target.closest('a')) setOpen(false); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setOpen(false); });
+    window.addEventListener('resize', function () { if (window.innerWidth > 860) setOpen(false); });
+  })();
+
   /* ---------- Role title rotator (below CTAs) ---------- */
   (function roleRotator() {
     var el = document.getElementById('roleCycle');
